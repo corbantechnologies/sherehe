@@ -6,7 +6,7 @@ import EventCard from "@/components/events/EventCard";
 import LoadingSpinner from "@/components/general/LoadingSpinner";
 import { useFetchEvents } from "@/hooks/events/actions";
 
-function Landing() {
+function Events() {
   const {
     isLoading: isLoadingEvents,
     data: events,
@@ -117,4 +117,4 @@ function Landing() {
   );
 }
 
-export default Landing;
+export default Events;
