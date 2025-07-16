@@ -9,13 +9,13 @@ export default function RootLayout({ children }) {
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    name: "Sherehe",
+    name: "Sherehe Tickets Kenya",
     url: "https://www.sherehe.co.ke",
     description:
       "Discover and book tickets for the most exciting events in Kenya with Sherehe.",
     publisher: {
       "@type": "Organization",
-      name: "Sherehe",
+      name: "Sherehe Tickets Kenya",
       logo: {
         "@type": "ImageObject",
         url: "https://www.sherehe.co.ke/favicon.ico",
@@ -31,7 +31,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
-        <title>Sherehe - Discover & Book Exciting Events in Kenya</title>
+        <title>Sherehe Tickets Kenya | Discover & Book Exciting Events in Kenya</title>
         <meta
           name="description"
           content="Explore and book tickets for top events in Kenya with Sherehe. Find concerts, festivals, and more in your area."
