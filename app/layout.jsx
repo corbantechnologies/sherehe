@@ -1,5 +1,6 @@
 "use client";
 
+import NextAuthProvider from "@/providers/NextAuthProvider";
 import "./globals.css";
 import TanstackQueryProvider from "@/providers/TanstackQueryProvider";
 import { Analytics } from "@vercel/analytics/react";
@@ -31,7 +32,9 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
-        <title>Sherehe Tickets Kenya | Discover & Book Exciting Events in Kenya</title>
+        <title>
+          Sherehe Tickets Kenya | Discover & Book Exciting Events in Kenya
+        </title>
         <meta
           name="description"
           content="Explore and book tickets for top events in Kenya with Sherehe. Find concerts, festivals, and more in your area."
@@ -86,7 +89,9 @@ export default function RootLayout({ children }) {
       </head>
       <body>
         <Toaster position="top-center" />
-        <TanstackQueryProvider>{children}</TanstackQueryProvider>
+        <NextAuthProvider>
+          <TanstackQueryProvider>{children}</TanstackQueryProvider>
+        </NextAuthProvider>
         <Analytics />
       </body>
     </html>
