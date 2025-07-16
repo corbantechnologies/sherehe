@@ -5,6 +5,7 @@ import { Calendar, Sparkles, TrendingUp } from "lucide-react";
 import EventCard from "@/components/events/EventCard";
 import LoadingSpinner from "@/components/general/LoadingSpinner";
 import { useFetchEvents } from "@/hooks/events/actions";
+import Footer from "@/components/landing/Footer";
 
 function Landing() {
   const {
@@ -113,6 +114,8 @@ function Landing() {
           </div>
         </div>
       </div> */}
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }
