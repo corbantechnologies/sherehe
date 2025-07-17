@@ -7,11 +7,9 @@ import {
   Calendar,
   MapPin,
   Users,
-  Clock,
   Plus,
   Edit,
   Trash2,
-  Eye,
   AlertCircle,
   Badge,
   DollarSign,
@@ -131,7 +129,7 @@ function EventDetail() {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => navigate?.back("/events")}
+              onClick={() => navigate?.back("/admin/events")}
               className="flex items-center gap-2"
             >
               <ArrowLeft className="h-4 w-4" />

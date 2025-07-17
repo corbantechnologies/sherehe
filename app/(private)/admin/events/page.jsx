@@ -21,8 +21,7 @@ import {
   Search,
   Filter,
   Eye,
-  Edit,
-  Trash2,
+  ArrowLeft,
   Plus,
 } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -175,6 +174,17 @@ function Events() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
+          <div className="flex items-center gap-4 mb-6">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => router.push("/admin/dashboard")}
+              className="flex items-center gap-2"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Back to Dashboard
+            </Button>
+          </div>
           <div className="flex justify-between items-start mb-4">
             <div>
               <h1 className="text-3xl font-bold text-gray-900">
