@@ -423,6 +423,7 @@ function EventDetail() {
           </TabsContent>
 
           {/* Bookings Tab */}
+          {/* Bookings Tab */}
           <TabsContent value="bookings">
             <Card>
               <CardHeader>
@@ -432,9 +433,104 @@ function EventDetail() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-600">
-                  Bookings functionality will be implemented here.
-                </p>
+                {event.ticket_types.some(
+                  (ticketType) => ticketType.bookings.length > 0
+                ) ? (
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm text-left text-gray-600">
+                      <thead className="text-xs text-gray-700 uppercase bg-gray-100">
+                        <tr>
+                          <th scope="col" className="px-6 py-3">
+                            Ticket Type
+                          </th>
+                          <th scope="col" className="px-6 py-3">
+                            Customer Name
+                          </th>
+                          <th scope="col" className="px-6 py-3">
+                            Email
+                          </th>
+                          <th scope="col" className="px-6 py-3">
+                            Phone
+                          </th>
+                          <th scope="col" className="px-6 py-3">
+                            Quantity
+                          </th>
+                          <th scope="col" className="px-6 py-3">
+                            Status
+                          </th>
+                          <th scope="col" className="px-6 py-3">
+                            Amount (KES)
+                          </th>
+                          <th scope="col" className="px-6 py-3">
+                            Booking Date
+                          </th>
+                          {/* <th scope="col" className="px-6 py-3">
+                            Actions
+                          </th> */}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {event.ticket_types.map((ticketType) =>
+                          ticketType.bookings.map((booking) => (
+                            <tr
+                              key={booking.identity}
+                              className="bg-white border-b hover:bg-gray-50"
+                            >
+                              <td className="px-6 py-4">{ticketType.name}</td>
+                              <td className="px-6 py-4">{booking.name}</td>
+                              <td className="px-6 py-4">{booking.email}</td>
+                              <td className="px-6 py-4">{booking.phone}</td>
+                              <td className="px-6 py-4">{booking.quantity}</td>
+                              <td className="px-6 py-4">
+                                <BadgeComponent
+                                  variant={
+                                    booking.status === "CONFIRMED"
+                                      ? "default"
+                                      : "secondary"
+                                  }
+                                >
+                                  {booking.status}
+                                </BadgeComponent>
+                              </td>
+                              <td className="px-6 py-4">
+                                {parseFloat(booking.amount).toFixed(2)}
+                              </td>
+                              <td className="px-6 py-4">
+                                {format(
+                                  new Date(booking.created_at),
+                                  "MMM dd, yyyy HH:mm"
+                                )}
+                              </td>
+                              {/* <td className="px-6 py-4 flex gap-2">
+                                <Button variant="outline" size="sm">
+                                  <Edit className="h-4 w-4" />
+                                </Button>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  className="text-red-600 hover:text-red-700"
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </td> */}
+                            </tr>
+                          ))
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                ) : (
+                  <div className="text-center py-12">
+                    <Users className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                    <h3 className="text-lg font-medium text-gray-900 mb-2">
+                      No bookings yet
+                    </h3>
+                    <p className="text-gray-600">
+                      Bookings for this event will appear here once they are
+                      made.
+                    </p>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
