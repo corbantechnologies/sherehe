@@ -56,6 +56,7 @@ function EventDetail() {
     useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedTicketType, setSelectedTicketType] = useState("all");
+  const [selectedStatus, setSelectedStatus] = useState("all");
   const itemsPerPage = 5;
 
   const {
@@ -73,10 +74,11 @@ function EventDetail() {
 
     event.ticket_types.forEach((ticketType) => {
       ticketType.bookings.forEach((booking) => {
-        totalBookings += booking?.quantity;
+        totalBookings += booking?.quantity || 0;
         if (booking.status === "CONFIRMED") {
-          confirmedBookings += booking?.quantity;
-          totalRevenue += parseFloat(ticketType?.price) * booking?.quantity;
+          confirmedBookings += booking?.quantity || 0;
+          totalRevenue +=
+            parseFloat(ticketType?.price || 0) * (booking?.quantity || 0);
         }
       });
     });
@@ -101,15 +103,20 @@ function EventDetail() {
     );
   };
 
-  // Filter bookings based on selected ticket type
+  // Filter bookings based on selected ticket type and status
   const filteredBookings = () => {
-    const allBookings = getAllBookings();
-    if (selectedTicketType === "all") {
-      return allBookings;
+    let allBookings = getAllBookings();
+    if (selectedTicketType !== "all") {
+      allBookings = allBookings.filter(
+        (booking) => booking.ticketTypeName === selectedTicketType
+      );
     }
-    return allBookings.filter(
-      (booking) => booking.ticketTypeName === selectedTicketType
-    );
+    if (selectedStatus === "confirmed") {
+      allBookings = allBookings.filter(
+        (booking) => booking.status === "CONFIRMED"
+      );
+    }
+    return allBookings;
   };
 
   // Pagination logic
@@ -471,25 +478,47 @@ function EventDetail() {
               <CardHeader>
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                   <CardTitle className="text-xl">Recent Bookings</CardTitle>
-                  <Select
-                    value={selectedTicketType}
-                    onValueChange={(value) => {
-                      setSelectedTicketType(value);
-                      setCurrentPage(1);
-                    }}
-                  >
-                    <SelectTrigger className="w-full sm:w-[180px]">
-                      <SelectValue placeholder="Select Ticket Type" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-white">
-                      <SelectItem value="all">All Tickets</SelectItem>
-                      {event.ticket_types.map((ticketType) => (
-                        <SelectItem key={ticketType.id} value={ticketType.name}>
-                          {ticketType.name}
+                  <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+                    <Select
+                      value={selectedTicketType}
+                      onValueChange={(value) => {
+                        setSelectedTicketType(value);
+                        setCurrentPage(1);
+                      }}
+                    >
+                      <SelectTrigger className="w-full sm:w-[180px]">
+                        <SelectValue placeholder="Select Ticket Type" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-white">
+                        <SelectItem value="all">All Tickets</SelectItem>
+                        {event.ticket_types.map((ticketType) => (
+                          <SelectItem
+                            key={ticketType.id}
+                            value={ticketType.name}
+                          >
+                            {ticketType.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <Select
+                      value={selectedStatus}
+                      onValueChange={(value) => {
+                        setSelectedStatus(value);
+                        setCurrentPage(1);
+                      }}
+                    >
+                      <SelectTrigger className="w-full sm:w-[180px]">
+                        <SelectValue placeholder="Select Status" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-white">
+                        <SelectItem value="all">All Statuses</SelectItem>
+                        <SelectItem value="confirmed">
+                          Confirmed Only
                         </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
                 <CardDescription>
                   Latest bookings for this event
