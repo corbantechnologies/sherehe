@@ -174,7 +174,7 @@ function Events() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <div className="flex items-center gap-4 mb-6">
+          {/* <div className="flex items-center gap-4 mb-6">
             <Button
               variant="outline"
               size="sm"
@@ -184,7 +184,7 @@ function Events() {
               <ArrowLeft className="h-4 w-4" />
               Back to Dashboard
             </Button>
-          </div>
+          </div> */}
           <div className="flex justify-between items-start mb-4">
             <div>
               <h1 className="text-3xl font-bold text-gray-900">
