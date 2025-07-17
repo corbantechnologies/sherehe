@@ -13,6 +13,8 @@ import {
   AlertCircle,
   Badge,
   DollarSign,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 
 import LoadingSpinner from "@/components/general/LoadingSpinner";
@@ -39,12 +41,22 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useParams, useRouter } from "next/navigation";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 function EventDetail() {
   const { identity } = useParams();
   const navigate = useRouter();
   const [isCreateTicketDialogOpen, setIsCreateTicketDialogOpen] =
     useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [selectedTicketType, setSelectedTicketType] = useState("all");
+  const itemsPerPage = 5;
 
   const {
     isLoading: isLoadingEvent,
@@ -75,6 +87,41 @@ function EventDetail() {
       totalRevenue,
       ticketTypes: event.ticket_types.length,
     };
+  };
+
+  // Flatten bookings with ticket type name for easier handling
+  const getAllBookings = () => {
+    return event?.ticket_types?.flatMap((ticketType) =>
+      ticketType?.bookings?.map((booking) => ({
+        ...booking,
+        ticketTypeName: ticketType?.name,
+      }))
+    );
+  };
+
+  // Filter bookings based on selected ticket type
+  const filteredBookings = () => {
+    const allBookings = getAllBookings();
+    if (selectedTicketType === "all") {
+      return allBookings;
+    }
+    return allBookings.filter(
+      (booking) => booking.ticketTypeName === selectedTicketType
+    );
+  };
+
+  // Pagination logic
+  const bookings = filteredBookings();
+  const totalBookings = bookings?.length;
+  const totalPages = Math?.ceil(totalBookings / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedBookings = bookings?.slice(startIndex, endIndex);
+
+  const handlePageChange = (page) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
   };
 
   if (isLoadingEvent) {
@@ -287,7 +334,7 @@ function EventDetail() {
                 </DialogTrigger>
                 <DialogContent>
                   <DialogHeader>
-                    <DialogTitle>Create New Ticket Type</DialogTitle>
+                    <DialogTitle>Create NewTicket Type</DialogTitle>
                     <DialogDescription>
                       Add a new ticket type for {event.name}
                     </DialogDescription>
@@ -423,60 +470,80 @@ function EventDetail() {
           </TabsContent>
 
           {/* Bookings Tab */}
-          {/* Bookings Tab */}
           <TabsContent value="bookings">
             <Card>
               <CardHeader>
-                <CardTitle>Recent Bookings</CardTitle>
+                <div className="flex justify-between items-center">
+                  <CardTitle>Recent Bookings</CardTitle>
+                  <Select
+                    value={selectedTicketType}
+                    onValueChange={(value) => {
+                      setSelectedTicketType(value);
+                      setCurrentPage(1); // Reset to first page when filter changes
+                    }}
+                  >
+                    <SelectTrigger className="w-[200px]">
+                      <SelectValue placeholder="Select Ticket Type" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-white">
+                      <SelectItem value="all">All Tickets</SelectItem>
+                      {event.ticket_types.map((ticketType) => (
+                        <SelectItem key={ticketType.id} value={ticketType.name}>
+                          {ticketType.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
                 <CardDescription>
                   Latest bookings for this event
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                {event.ticket_types.some(
-                  (ticketType) => ticketType.bookings.length > 0
-                ) ? (
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-sm text-left text-gray-600">
-                      <thead className="text-xs text-gray-700 uppercase bg-gray-100">
-                        <tr>
-                          <th scope="col" className="px-6 py-3">
-                            Ticket Type
-                          </th>
-                          <th scope="col" className="px-6 py-3">
-                            Customer Name
-                          </th>
-                          <th scope="col" className="px-6 py-3">
-                            Email
-                          </th>
-                          <th scope="col" className="px-6 py-3">
-                            Phone
-                          </th>
-                          <th scope="col" className="px-6 py-3">
-                            Quantity
-                          </th>
-                          <th scope="col" className="px-6 py-3">
-                            Status
-                          </th>
-                          <th scope="col" className="px-6 py-3">
-                            Amount (KES)
-                          </th>
-                          <th scope="col" className="px-6 py-3">
-                            Booking Date
-                          </th>
-                          {/* <th scope="col" className="px-6 py-3">
-                            Actions
-                          </th> */}
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {event.ticket_types.map((ticketType) =>
-                          ticketType.bookings.map((booking) => (
+                {bookings.length > 0 ? (
+                  <>
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-sm text-left text-gray-600">
+                        <thead className="text-xs text-gray-700 uppercase bg-gray-100">
+                          <tr>
+                            <th scope="col" className="px-6 py-3">
+                              Ticket Type
+                            </th>
+                            <th scope="col" className="px-6 py-3">
+                              Customer Name
+                            </th>
+                            <th scope="col" className="px-6 py-3">
+                              Email
+                            </th>
+                            <th scope="col" className="px-6 py-3">
+                              Phone
+                            </th>
+                            <th scope="col" className="px-6 py-3">
+                              Quantity
+                            </th>
+                            <th scope="col" className="px-6 py-3">
+                              Status
+                            </th>
+                            <th scope="col" className="px-6 py-3">
+                              Amount (KES)
+                            </th>
+                            <th scope="col" className="px-6 py-3">
+                              Booking Date
+                            </th>
+                            <th scope="col" className="px-6 py-3">
+                              Actions
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {paginatedBookings.map((booking) => (
                             <tr
                               key={booking.identity}
                               className="bg-white border-b hover:bg-gray-50"
                             >
-                              <td className="px-6 py-4">{ticketType.name}</td>
+                              <td className="px-6 py-4">
+                                {booking.ticketTypeName}
+                              </td>
                               <td className="px-6 py-4">{booking.name}</td>
                               <td className="px-6 py-4">{booking.email}</td>
                               <td className="px-6 py-4">{booking.phone}</td>
@@ -501,7 +568,7 @@ function EventDetail() {
                                   "MMM dd, yyyy HH:mm"
                                 )}
                               </td>
-                              {/* <td className="px-6 py-4 flex gap-2">
+                              <td className="px-6 py-4 flex gap-2">
                                 <Button variant="outline" size="sm">
                                   <Edit className="h-4 w-4" />
                                 </Button>
@@ -512,13 +579,58 @@ function EventDetail() {
                                 >
                                   <Trash2 className="h-4 w-4" />
                                 </Button>
-                              </td> */}
+                              </td>
                             </tr>
-                          ))
-                        )}
-                      </tbody>
-                    </table>
-                  </div>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                    {/* Pagination Controls */}
+                    <div className="flex items-center justify-between mt-6">
+                      <div className="text-sm text-gray-600">
+                        Showing {startIndex + 1} to{" "}
+                        {Math.min(endIndex, totalBookings)} of {totalBookings}{" "}
+                        bookings
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handlePageChange(currentPage - 1)}
+                          disabled={currentPage === 1}
+                        >
+                          <ChevronLeft className="h-4 w-4" />
+                          Previous
+                        </Button>
+                        <div className="flex gap-1">
+                          {Array.from(
+                            { length: totalPages },
+                            (_, i) => i + 1
+                          ).map((page) => (
+                            <Button
+                              key={page}
+                              variant={
+                                currentPage === page ? "default" : "outline"
+                              }
+                              size="sm"
+                              onClick={() => handlePageChange(page)}
+                            >
+                              {page}
+                            </Button>
+                          ))}
+                        </div>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handlePageChange(currentPage + 1)}
+                          disabled={currentPage === totalPages}
+                        >
+                          Next
+                          <ChevronRight className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  </>
                 ) : (
                   <div className="text-center py-12">
                     <Users className="h-12 w-12 text-gray-400 mx-auto mb-4" />
