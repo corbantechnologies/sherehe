@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { apiMultipartActions } from "@/tools/api";
 import toast from "react-hot-toast";
 
-function EventCreate({ closeModal }) {
+function CreateEvent({ closeModal }) {
   const axios = useAxiosAuth();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -238,4 +238,4 @@ function EventCreate({ closeModal }) {
   );
 }
 
-export default EventCreate;
+export default CreateEvent;
