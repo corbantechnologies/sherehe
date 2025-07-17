@@ -310,10 +310,10 @@ function EventDetail() {
         </div>
 
         {/* Tabs Section */}
-        <Tabs defaultValue="tickets" className="space-y-6">
+        <Tabs defaultValue="bookings" className="space-y-6">
           <TabsList>
-            <TabsTrigger value="tickets">Ticket Types</TabsTrigger>
             <TabsTrigger value="bookings">Bookings</TabsTrigger>
+            <TabsTrigger value="tickets">Ticket Types</TabsTrigger>
             <TabsTrigger value="details">Event Details</TabsTrigger>
           </TabsList>
 
