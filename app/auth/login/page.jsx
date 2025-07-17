@@ -32,7 +32,7 @@ const LoginForm = () => {
     } else {
       toast?.success("Login successful! Redirecting...");
       if (session?.user?.is_admin === true) {
-        router.push("/admin/dashboard");
+        router.push("/admin/events");
       } else if (session?.user?.is_event === true) {
         router.push("/admin/events");
       } else {
