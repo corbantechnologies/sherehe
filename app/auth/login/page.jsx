@@ -34,7 +34,7 @@ const LoginForm = () => {
       if (session?.user?.is_admin === true) {
         router.push("/admin/dashboard");
       } else if (session?.user?.is_event === true) {
-        router.push("/admin/dashboard");
+        router.push("/admin/events");
       } else {
         router.push("/");
       }
