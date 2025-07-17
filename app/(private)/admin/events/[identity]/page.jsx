@@ -73,10 +73,10 @@ function EventDetail() {
 
     event.ticket_types.forEach((ticketType) => {
       ticketType.bookings.forEach((booking) => {
-        totalBookings += booking.quantity;
+        totalBookings += booking?.quantity;
         if (booking.status === "CONFIRMED") {
-          confirmedBookings += booking.quantity;
-          totalRevenue += parseFloat(ticketType.price) * booking.quantity;
+          confirmedBookings += booking?.quantity;
+          totalRevenue += parseFloat(ticketType?.price) * booking?.quantity;
         }
       });
     });
@@ -91,11 +91,13 @@ function EventDetail() {
 
   // Flatten bookings with ticket type name for easier handling
   const getAllBookings = () => {
-    return event?.ticket_types?.flatMap((ticketType) =>
-      ticketType?.bookings?.map((booking) => ({
-        ...booking,
-        ticketTypeName: ticketType?.name,
-      }))
+    return (
+      event?.ticket_types?.flatMap((ticketType) =>
+        ticketType?.bookings?.map((booking) => ({
+          ...booking,
+          ticketTypeName: ticketType?.name,
+        }))
+      ) || []
     );
   };
 
@@ -112,11 +114,11 @@ function EventDetail() {
 
   // Pagination logic
   const bookings = filteredBookings();
-  const totalBookings = bookings?.length;
-  const totalPages = Math?.ceil(totalBookings / itemsPerPage);
+  const totalBookings = bookings.length;
+  const totalPages = Math.ceil(totalBookings / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const paginatedBookings = bookings?.slice(startIndex, endIndex);
+  const paginatedBookings = bookings.slice(startIndex, endIndex);
 
   const handlePageChange = (page) => {
     if (page >= 1 && page <= totalPages) {
@@ -130,7 +132,7 @@ function EventDetail() {
 
   if (isErrorEvent) {
     return (
-      <div className="min-h-screen bg-gray-50 p-6">
+      <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
         <div className="max-w-7xl mx-auto">
           <Alert variant="destructive">
             <AlertCircle className="h-4 w-4" />
@@ -153,7 +155,7 @@ function EventDetail() {
 
   if (!event) {
     return (
-      <div className="min-h-screen bg-gray-50 p-6">
+      <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
         <div className="max-w-7xl mx-auto">
           <Alert>
             <AlertCircle className="h-4 w-4" />
@@ -168,16 +170,16 @@ function EventDetail() {
   const isUpcoming = new Date(event.start_date) >= new Date();
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center gap-4 mb-6">
+        <div className="mb-6 sm:mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-6">
             <Button
               variant="outline"
               size="sm"
               onClick={() => navigate?.back("/admin/events")}
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 w-full sm:w-auto"
             >
               <ArrowLeft className="h-4 w-4" />
               Back to Events
@@ -190,15 +192,15 @@ function EventDetail() {
             </div>
           </div>
 
-          <div className="flex justify-between items-start">
+          <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
                 {event.name}
               </h1>
               <p className="text-gray-600 mb-4">{event.description}</p>
 
               {/* Event Details */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 text-sm">
                 <div className="flex items-center text-gray-600">
                   <Calendar className="h-4 w-4 mr-2" />
                   <span>
@@ -221,7 +223,7 @@ function EventDetail() {
               </div>
             </div>
 
-            <div className="flex gap-2">
+            {/* <div className="flex gap-2">
               <Button variant="outline">
                 <Edit className="h-4 w-4 mr-2" />
                 Edit Event
@@ -233,33 +235,33 @@ function EventDetail() {
                 <Trash2 className="h-4 w-4 mr-2" />
                 Delete
               </Button>
-            </div>
+            </div> */}
           </div>
         </div>
 
         {/* Event Image */}
         {event.image && (
-          <div className="mb-8">
+          <div className="mb-6 sm:mb-8">
             <img
               src={event.image}
               alt={event.name}
-              className="w-full h-64 object-cover rounded-lg shadow-sm"
+              className="w-full h-48 sm:h-64 object-cover rounded-lg shadow-sm"
             />
           </div>
         )}
 
         {/* Statistics Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600">Total Bookings</p>
-                  <p className="text-2xl font-bold">
+                  <p className="text-xl sm:text-2xl font-bold">
                     {stats.confirmedBookings}
                   </p>
                 </div>
-                <Users className="h-8 w-8 text-blue-600" />
+                <Users className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600" />
               </div>
             </CardContent>
           </Card>
@@ -269,11 +271,11 @@ function EventDetail() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600">Total Revenue</p>
-                  <p className="text-2xl font-bold">
+                  <p className="text-xl sm:text-2xl font-bold">
                     KES {stats.totalRevenue.toFixed(2)}
                   </p>
                 </div>
-                <DollarSign className="h-8 w-8 text-green-600" />
+                <DollarSign className="h-6 w-6 sm:h-8 sm:w-8 text-green-600" />
               </div>
             </CardContent>
           </Card>
@@ -283,9 +285,11 @@ function EventDetail() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600">Ticket Types</p>
-                  <p className="text-2xl font-bold">{stats.ticketTypes}</p>
+                  <p className="text-xl sm:text-2xl font-bold">
+                    {stats.ticketTypes}
+                  </p>
                 </div>
-                <Badge className="h-8 w-8 text-purple-600" />
+                <Badge className="h-6 w-6 sm:h-8 sm:w-8 text-purple-600" />
               </div>
             </CardContent>
           </Card>
@@ -295,7 +299,7 @@ function EventDetail() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600">Capacity Used</p>
-                  <p className="text-2xl font-bold">
+                  <p className="text-xl sm:text-2xl font-bold">
                     {event.capacity
                       ? `${Math.round(
                           (stats.confirmedBookings / event.capacity) * 100
@@ -303,7 +307,7 @@ function EventDetail() {
                       : "N/A"}
                   </p>
                 </div>
-                <Users className="h-8 w-8 text-orange-600" />
+                <Users className="h-6 w-6 sm:h-8 sm:w-8 text-orange-600" />
               </div>
             </CardContent>
           </Card>
@@ -311,7 +315,7 @@ function EventDetail() {
 
         {/* Tabs Section */}
         <Tabs defaultValue="bookings" className="space-y-6">
-          <TabsList>
+          <TabsList className="flex flex-wrap justify-start">
             <TabsTrigger value="bookings">Bookings</TabsTrigger>
             <TabsTrigger value="tickets">Ticket Types</TabsTrigger>
             <TabsTrigger value="details">Event Details</TabsTrigger>
@@ -319,27 +323,25 @@ function EventDetail() {
 
           {/* Ticket Types Tab */}
           <TabsContent value="tickets" className="space-y-6">
-            <div className="flex justify-between items-center">
+            <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
               <h2 className="text-xl font-semibold">Ticket Types</h2>
-
               <Dialog
                 open={isCreateTicketDialogOpen}
                 onOpenChange={setIsCreateTicketDialogOpen}
               >
                 <DialogTrigger asChild>
-                  <Button>
+                  <Button className="w-full sm:w-auto">
                     <Plus className="h-4 w-4 mr-2" />
                     Create Ticket Type
                   </Button>
                 </DialogTrigger>
                 <DialogContent>
                   <DialogHeader>
-                    <DialogTitle>Create NewTicket Type</DialogTitle>
+                    <DialogTitle>Create New Ticket Type</DialogTitle>
                     <DialogDescription>
                       Add a new ticket type for {event.name}
                     </DialogDescription>
                   </DialogHeader>
-
                   <div className="space-y-4">
                     <div>
                       <Label htmlFor="ticket-name">Ticket Name</Label>
@@ -348,7 +350,6 @@ function EventDetail() {
                         placeholder="e.g., VIP, General Admission"
                       />
                     </div>
-
                     <div>
                       <Label htmlFor="ticket-price">Price (KES)</Label>
                       <Input
@@ -357,7 +358,6 @@ function EventDetail() {
                         placeholder="0.00"
                       />
                     </div>
-
                     <div>
                       <Label htmlFor="ticket-quantity">
                         Quantity Available
@@ -368,7 +368,6 @@ function EventDetail() {
                         placeholder="Leave empty for unlimited"
                       />
                     </div>
-
                     <div className="flex gap-2 pt-4">
                       <Button className="flex-1">Create Ticket Type</Button>
                       <Button
@@ -382,10 +381,9 @@ function EventDetail() {
                 </DialogContent>
               </Dialog>
             </div>
-
             {event.ticket_types.length === 0 ? (
-              <Card className="p-12 text-center">
-                <Badge className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+              <Card className="p-8 sm:p-12 text-center">
+                <Badge className="h-10 w-10 sm:h-12 sm:w-12 text-gray-400 mx-auto mb-4" />
                 <h3 className="text-lg font-medium text-gray-900 mb-2">
                   No ticket types yet
                 </h3>
@@ -411,11 +409,10 @@ function EventDetail() {
                     },
                     { sold: 0, revenue: 0 }
                   );
-
                   return (
                     <Card key={ticketType.id}>
                       <CardHeader className="pb-3">
-                        <div className="flex justify-between items-start">
+                        <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
                           <div>
                             <CardTitle className="text-lg">
                               {ticketType.name}
@@ -438,9 +435,8 @@ function EventDetail() {
                           </div>
                         </div>
                       </CardHeader>
-
                       <CardContent>
-                        <div className="grid grid-cols-3 gap-4 text-sm">
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
                           <div>
                             <p className="text-gray-600">Sold</p>
                             <p className="font-semibold">{ticketStats.sold}</p>
@@ -473,16 +469,16 @@ function EventDetail() {
           <TabsContent value="bookings">
             <Card>
               <CardHeader>
-                <div className="flex justify-between items-center">
-                  <CardTitle>Recent Bookings</CardTitle>
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                  <CardTitle className="text-xl">Recent Bookings</CardTitle>
                   <Select
                     value={selectedTicketType}
                     onValueChange={(value) => {
                       setSelectedTicketType(value);
-                      setCurrentPage(1); // Reset to first page when filter changes
+                      setCurrentPage(1);
                     }}
                   >
-                    <SelectTrigger className="w-[200px]">
+                    <SelectTrigger className="w-full sm:w-[180px]">
                       <SelectValue placeholder="Select Ticket Type" />
                     </SelectTrigger>
                     <SelectContent className="bg-white">
@@ -502,37 +498,36 @@ function EventDetail() {
               <CardContent>
                 {bookings.length > 0 ? (
                   <>
-                    <div className="overflow-x-auto">
+                    {/* Desktop Table View */}
+                    <div className="hidden sm:block overflow-x-auto">
                       <table className="w-full text-sm text-left text-gray-600">
                         <thead className="text-xs text-gray-700 uppercase bg-gray-100">
                           <tr>
-                            <th scope="col" className="px-6 py-3">
+                            <th scope="col" className="px-4 py-3">
                               Ticket Type
                             </th>
-                            <th scope="col" className="px-6 py-3">
+                            <th scope="col" className="px-4 py-3">
                               Customer Name
                             </th>
-                            <th scope="col" className="px-6 py-3">
+                            <th scope="col" className="px-4 py-3">
                               Email
                             </th>
-                            <th scope="col" className="px-6 py-3">
+                            <th scope="col" className="px-4 py-3">
                               Phone
                             </th>
-                            <th scope="col" className="px-6 py-3">
+                            <th scope="col" className="px-4 py-3">
                               Quantity
                             </th>
-                            <th scope="col" className="px-6 py-3">
+                            <th scope="col" className="px-4 py-3">
                               Status
                             </th>
-                            <th scope="col" className="px-6 py-3">
+                            <th scope="col" className="px-4 py-3">
                               Amount (KES)
                             </th>
-                            <th scope="col" className="px-6 py-3">
+                            <th scope="col" className="px-4 py-3">
                               Booking Date
                             </th>
-                            <th scope="col" className="px-6 py-3">
-                              Actions
-                            </th>
+                            {/* <th scope="col" className="px-4 py-3">Actions</th> */}
                           </tr>
                         </thead>
                         <tbody>
@@ -541,14 +536,14 @@ function EventDetail() {
                               key={booking.identity}
                               className="bg-white border-b hover:bg-gray-50"
                             >
-                              <td className="px-6 py-4">
+                              <td className="px-4 py-3">
                                 {booking.ticketTypeName}
                               </td>
-                              <td className="px-6 py-4">{booking.name}</td>
-                              <td className="px-6 py-4">{booking.email}</td>
-                              <td className="px-6 py-4">{booking.phone}</td>
-                              <td className="px-6 py-4">{booking.quantity}</td>
-                              <td className="px-6 py-4">
+                              <td className="px-4 py-3">{booking.name}</td>
+                              <td className="px-4 py-3">{booking.email}</td>
+                              <td className="px-4 py-3">{booking.phone}</td>
+                              <td className="px-4 py-3">{booking.quantity}</td>
+                              <td className="px-4 py-3">
                                 <BadgeComponent
                                   variant={
                                     booking.status === "CONFIRMED"
@@ -559,16 +554,16 @@ function EventDetail() {
                                   {booking.status}
                                 </BadgeComponent>
                               </td>
-                              <td className="px-6 py-4">
+                              <td className="px-4 py-3">
                                 {parseFloat(booking.amount).toFixed(2)}
                               </td>
-                              <td className="px-6 py-4">
+                              <td className="px-4 py-3">
                                 {format(
                                   new Date(booking.created_at),
                                   "MMM dd, yyyy HH:mm"
                                 )}
                               </td>
-                              <td className="px-6 py-4 flex gap-2">
+                              {/* <td className="px-4 py-3 flex gap-2">
                                 <Button variant="outline" size="sm">
                                   <Edit className="h-4 w-4" />
                                 </Button>
@@ -579,61 +574,173 @@ function EventDetail() {
                                 >
                                   <Trash2 className="h-4 w-4" />
                                 </Button>
-                              </td>
+                              </td> */}
                             </tr>
                           ))}
                         </tbody>
                       </table>
                     </div>
+                    {/* Mobile Card View */}
+                    <div className="block sm:hidden space-y-4">
+                      {paginatedBookings.map((booking) => (
+                        <Card key={booking.identity} className="p-4">
+                          <div className="space-y-2 text-sm">
+                            <div>
+                              <span className="font-semibold">
+                                Ticket Type:
+                              </span>{" "}
+                              {booking.ticketTypeName}
+                            </div>
+                            <div>
+                              <span className="font-semibold">
+                                Customer Name:
+                              </span>{" "}
+                              {booking.name}
+                            </div>
+                            <div>
+                              <span className="font-semibold">Email:</span>{" "}
+                              {booking.email}
+                            </div>
+                            <div>
+                              <span className="font-semibold">Phone:</span>{" "}
+                              {booking.phone}
+                            </div>
+                            <div>
+                              <span className="font-semibold">Quantity:</span>{" "}
+                              {booking.quantity}
+                            </div>
+                            <div>
+                              <span className="font-semibold">Status:</span>{" "}
+                              <BadgeComponent
+                                variant={
+                                  booking.status === "CONFIRMED"
+                                    ? "default"
+                                    : "secondary"
+                                }
+                              >
+                                {booking.status}
+                              </BadgeComponent>
+                            </div>
+                            <div>
+                              <span className="font-semibold">
+                                Amount (KES):
+                              </span>{" "}
+                              {parseFloat(booking.amount).toFixed(2)}
+                            </div>
+                            <div>
+                              <span className="font-semibold">
+                                Booking Date:
+                              </span>{" "}
+                              {format(
+                                new Date(booking.created_at),
+                                "MMM dd, yyyy HH:mm"
+                              )}
+                            </div>
+                          </div>
+                        </Card>
+                      ))}
+                    </div>
                     {/* Pagination Controls */}
-                    <div className="flex items-center justify-between mt-6">
+                    <div className="flex flex-col sm:flex-row items-center justify-between mt-6 gap-4">
                       <div className="text-sm text-gray-600">
                         Showing {startIndex + 1} to{" "}
                         {Math.min(endIndex, totalBookings)} of {totalBookings}{" "}
                         bookings
                       </div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 flex-wrap justify-center">
                         <Button
                           variant="outline"
                           size="sm"
                           onClick={() => handlePageChange(currentPage - 1)}
                           disabled={currentPage === 1}
+                          className="w-full sm:w-auto"
                         >
-                          <ChevronLeft className="h-4 w-4" />
+                          <ChevronLeft className="h-4 w-4 mr-1" />
                           Previous
                         </Button>
                         <div className="flex gap-1">
-                          {Array.from(
-                            { length: totalPages },
-                            (_, i) => i + 1
-                          ).map((page) => (
-                            <Button
-                              key={page}
-                              variant={
-                                currentPage === page ? "default" : "outline"
-                              }
-                              size="sm"
-                              onClick={() => handlePageChange(page)}
-                            >
-                              {page}
-                            </Button>
-                          ))}
+                          {totalPages <= 5 ? (
+                            Array.from(
+                              { length: totalPages },
+                              (_, i) => i + 1
+                            ).map((page) => (
+                              <Button
+                                key={page}
+                                variant={
+                                  currentPage === page ? "default" : "outline"
+                                }
+                                size="sm"
+                                onClick={() => handlePageChange(page)}
+                              >
+                                {page}
+                              </Button>
+                            ))
+                          ) : (
+                            <>
+                              <Button
+                                variant={
+                                  currentPage === 1 ? "default" : "outline"
+                                }
+                                size="sm"
+                                onClick={() => handlePageChange(1)}
+                              >
+                                1
+                              </Button>
+                              {currentPage > 3 && (
+                                <span className="px-2">...</span>
+                              )}
+                              {Array.from(
+                                { length: 3 },
+                                (_, i) => currentPage - 1 + i
+                              )
+                                .filter((page) => page > 1 && page < totalPages)
+                                .map((page) => (
+                                  <Button
+                                    key={page}
+                                    variant={
+                                      currentPage === page
+                                        ? "default"
+                                        : "outline"
+                                    }
+                                    size="sm"
+                                    onClick={() => handlePageChange(page)}
+                                  >
+                                    {page}
+                                  </Button>
+                                ))}
+                              {currentPage < totalPages - 2 && (
+                                <span className="px-2">...</span>
+                              )}
+                              <Button
+                                variant={
+                                  currentPage === totalPages
+                                    ? "default"
+                                    : "outline"
+                                }
+                                size="sm"
+                                onClick={() => handlePageChange(totalPages)}
+                              >
+                                {totalPages}
+                              </Button>
+                            </>
+                          )}
                         </div>
                         <Button
                           variant="outline"
                           size="sm"
                           onClick={() => handlePageChange(currentPage + 1)}
                           disabled={currentPage === totalPages}
+                          className="w-full sm:w-auto"
                         >
                           Next
-                          <ChevronRight className="h-4 w-4" />
+                          <ChevronRight className="h-4 w-4 ml-1" />
                         </Button>
                       </div>
                     </div>
                   </>
                 ) : (
-                  <div className="text-center py-12">
-                    <Users className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                  <div className="text-center py-8 sm:py-12">
+                    <Users className="h-10 w-10 sm:h-12 sm:w-12 text-gray-400 mx-auto mb-4" />
                     <h3 className="text-lg font-medium text-gray-900 mb-2">
                       No bookings yet
                     </h3>
@@ -654,7 +761,7 @@ function EventDetail() {
                 <CardTitle>Event Information</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4 text-sm">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
                   <div>
                     <p className="text-gray-600">Created By</p>
                     <p className="font-medium">{event.created_by}</p>
