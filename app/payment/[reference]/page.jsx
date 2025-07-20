@@ -1,4 +1,3 @@
-// components/payments/BookingPayment.jsx
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -10,7 +9,6 @@ import {
   Phone,
   User,
   Ticket,
-  Hash,
   AlertCircle,
 } from "lucide-react";
 import toast from "react-hot-toast";
@@ -22,35 +20,62 @@ function BookingPayment() {
   const router = useRouter();
   const { reference } = useParams();
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+  const [paymentMessage, setPaymentMessage] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [phoneNumber, setPhoneNumber] = useState("");
 
   const {
     isLoading: isLoadingBooking,
     data: booking,
-    refetch: refetchBooking,
+    error: bookingError,
   } = useFetchBooking(reference);
 
+  // Set loading to false and handle payment status on load
+  useEffect(() => {
+    if (!isLoadingBooking) {
+      setLoading(false);
+      if (booking?.payment_status === "COMPLETED") {
+        router.push(`/payment/${reference}/success`);
+      } else if (booking?.payment_status === "FAILED") {
+        router.push(`/payment/${reference}/failure`);
+      }
+      // Pre-fill phone number from booking if available
+      if (booking?.phone && booking?.payment_status === "PENDING") {
+        setPhoneNumber(booking.phone);
+      }
+    }
+  }, [isLoadingBooking, booking, reference, router]);
+
+  const validatePhoneNumber = (phone) => {
+    const phoneRegex = /^254\d{9}$/;
+    return phoneRegex.test(phone);
+  };
+
   const handlePayment = async () => {
+    if (!validatePhoneNumber(phoneNumber)) {
+      toast.error("Please enter a valid phone number (e.g., 2547XXXXXXXX)");
+      return;
+    }
+
     setIsProcessingPayment(true);
+    setPaymentMessage(null);
     try {
       const payload = {
         booking_reference: booking?.reference,
+        phone_number: phoneNumber,
       };
 
-      const response = await apiActions?.post("/api/v1/payments/pay/", payload);
-      const { redirect_url } = response.data;
-
-      if (redirect_url) {
-        window.location.href = redirect_url;
-      } else {
-        throw new Error("No redirect URL returned from payment API");
-      }
-    } catch (error) {
-      toast.error(
-        "Error initiating payment: " + (error.message || "Please try again")
+      const response = await apiActions?.post("/api/v1/mpesa/pay/", payload);
+      setPaymentMessage(
+        "Please check your phone and enter your M-Pesa PIN to complete the payment."
       );
-    } finally {
+    } catch (error) {
       setIsProcessingPayment(false);
+      setPaymentMessage(null);
+      toast.error(
+        error.response?.data?.error ||
+          "Error initiating payment: Please try again"
+      );
     }
   };
 
@@ -58,7 +83,7 @@ function BookingPayment() {
     switch (status) {
       case "PENDING":
         return "bg-yellow-100 text-yellow-800 border-yellow-200";
-      case "PAID":
+      case "CONFIRMED":
         return "bg-green-100 text-green-800 border-green-200";
       case "CANCELLED":
         return "bg-red-100 text-red-800 border-red-200";
@@ -67,11 +92,11 @@ function BookingPayment() {
     }
   };
 
-  if (isLoadingBooking) {
+  if (isLoadingBooking || loading) {
     return <LoadingSpinner />;
   }
 
-  if (!booking) {
+  if (bookingError || !booking) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
@@ -215,34 +240,56 @@ function BookingPayment() {
                   {booking.payment_status}
                 </span>
               </div>
-              {/* {booking.merchant_reference && (
-                <div className="flex justify-between">
-                  <span>Merchant Reference:</span>
-                  <span className="font-mono text-xs">
-                    {booking.merchant_reference}
-                  </span>
-                </div>
-              )} */}
             </div>
+            {booking.payment_status === "PENDING" && (
+              <div className="mb-6">
+                <label
+                  htmlFor="phoneNumber"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  M-Pesa Phone Number
+                </label>
+                <div className="flex items-center gap-2">
+                  <Phone className="h-5 w-5 text-gray-500" />
+                  <input
+                    type="text"
+                    id="phoneNumber"
+                    value={phoneNumber}
+                    onChange={(e) => setPhoneNumber(e.target.value)}
+                    placeholder="2547XXXXXXXX"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                  />
+                </div>
+                <p className="text-sm text-gray-500 mt-1">
+                  Enter the phone number registered with M-Pesa (e.g.,
+                  2547XXXXXXXX)
+                </p>
+              </div>
+            )}
+            {paymentMessage && (
+              <div className="bg-blue-50 p-4 rounded-lg border border-blue-200 mb-6">
+                <p className="text-blue-600">{paymentMessage}</p>
+              </div>
+            )}
             <hr className="my-4" />
             {booking.payment_status === "PENDING" && (
               <button
                 onClick={handlePayment}
-                disabled={isProcessingPayment}
-                className="w-full py-3 bg-red-600 text-white rounded-md hover:bg-red-700 disabled:bg-red-400 flex items-center justify-center gap-2"
+                disabled={isProcessingPayment || !phoneNumber}
+                className="w-full py-3 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:bg-green-400 flex items-center justify-center gap-2"
               >
                 {isProcessingPayment ? (
                   <>Processing Payment...</>
                 ) : (
                   <>
                     <CreditCard className="h-5 w-5" />
-                    Pay {booking.currency || "KES"}{" "}
+                    Pay with M-Pesa {booking.currency || "KES"}{" "}
                     {parseFloat(booking.amount).toLocaleString()}
                   </>
                 )}
               </button>
             )}
-            {booking.payment_status === "PAID" && (
+            {booking.payment_status === "COMPLETED" && (
               <div className="text-center p-4 bg-green-50 rounded-lg border border-green-200">
                 <div className="text-green-600 font-semibold mb-2">
                   Payment Completed!
@@ -250,11 +297,33 @@ function BookingPayment() {
                 <p className="text-sm text-green-600">
                   Your booking has been confirmed.
                 </p>
-                {booking.confirmation_code && (
+                {booking.mpesa_receipt_number && (
                   <p className="text-xs text-green-600 mt-2">
-                    Confirmation Code: {booking.confirmation_code}
+                    M-Pesa Receipt: {booking.mpesa_receipt_number}
                   </p>
                 )}
+                <button
+                  onClick={() => router.push(`/payment/${reference}/success`)}
+                  className="mt-4 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
+                >
+                  View Booking
+                </button>
+              </div>
+            )}
+            {booking.payment_status === "FAILED" && (
+              <div className="text-center p-4 bg-red-50 rounded-lg border border-red-200">
+                <div className="text-red-600 font-semibold mb-2">
+                  Payment Failed
+                </div>
+                <p className="text-sm text-red-600">
+                  Please try again or contact support.
+                </p>
+                <button
+                  onClick={() => router.push(`/pay/${reference}`)}
+                  className="mt-4 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+                >
+                  Try Again
+                </button>
               </div>
             )}
           </div>
