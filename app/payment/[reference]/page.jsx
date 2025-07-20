@@ -30,16 +30,21 @@ function BookingPayment() {
     error: bookingError,
   } = useFetchBooking(reference);
 
-  // Set loading to false when booking fetch completes
+  // Set loading to false and handle payment status on load
   useEffect(() => {
     if (!isLoadingBooking) {
       setLoading(false);
+      if (booking?.payment_status === "COMPLETED") {
+        router.push(`/payment/${reference}/success`);
+      } else if (booking?.payment_status === "FAILED") {
+        router.push(`/payment/${reference}/failure`);
+      }
       // Pre-fill phone number from booking if available
-      if (booking?.phone) {
+      if (booking?.phone && booking?.payment_status === "PENDING") {
         setPhoneNumber(booking.phone);
       }
     }
-  }, [isLoadingBooking, booking]);
+  }, [isLoadingBooking, booking, reference, router]);
 
   const validatePhoneNumber = (phone) => {
     const phoneRegex = /^254\d{9}$/;
@@ -68,7 +73,8 @@ function BookingPayment() {
       setIsProcessingPayment(false);
       setPaymentMessage(null);
       toast.error(
-        "Error initiating payment: " + (error.message || "Please try again")
+        error.response?.data?.error ||
+          "Error initiating payment: Please try again"
       );
     }
   };
@@ -296,6 +302,12 @@ function BookingPayment() {
                     M-Pesa Receipt: {booking.mpesa_receipt_number}
                   </p>
                 )}
+                <button
+                  onClick={() => router.push(`/payment/${reference}/success`)}
+                  className="mt-4 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
+                >
+                  View Booking
+                </button>
               </div>
             )}
             {booking.payment_status === "FAILED" && (
@@ -306,6 +318,12 @@ function BookingPayment() {
                 <p className="text-sm text-red-600">
                   Please try again or contact support.
                 </p>
+                <button
+                  onClick={() => router.push(`/pay/${reference}`)}
+                  className="mt-4 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+                >
+                  Try Again
+                </button>
               </div>
             )}
           </div>
