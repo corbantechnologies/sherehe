@@ -10,6 +10,7 @@ import {
   User,
   Ticket,
   AlertCircle,
+  RefreshCw,
 } from "lucide-react";
 import toast from "react-hot-toast";
 import { apiActions } from "@/tools/api";
@@ -23,28 +24,24 @@ function BookingPayment() {
   const [paymentMessage, setPaymentMessage] = useState(null);
   const [loading, setLoading] = useState(true);
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [isCheckingStatus, setIsCheckingStatus] = useState(false);
 
   const {
     isLoading: isLoadingBooking,
     data: booking,
     error: bookingError,
+    refetch: refetchBooking,
   } = useFetchBooking(reference);
 
-  // Set loading to false and handle payment status on load
+  // Set loading to false and pre-fill phone number
   useEffect(() => {
     if (!isLoadingBooking) {
       setLoading(false);
-      if (booking?.payment_status === "COMPLETED") {
-        router.push(`/payment/${reference}/success`);
-      } else if (booking?.payment_status === "FAILED") {
-        router.push(`/payment/${reference}/failure`);
-      }
-      // Pre-fill phone number from booking if available
       if (booking?.phone && booking?.payment_status === "PENDING") {
         setPhoneNumber(booking.phone);
       }
     }
-  }, [isLoadingBooking, booking, reference, router]);
+  }, [isLoadingBooking, booking]);
 
   const validatePhoneNumber = (phone) => {
     const phoneRegex = /^254\d{9}$/;
@@ -67,7 +64,7 @@ function BookingPayment() {
 
       const response = await apiActions?.post("/api/v1/mpesa/pay/", payload);
       setPaymentMessage(
-        "Please check your phone and enter your M-Pesa PIN to complete the payment."
+        "Please check your phone and enter your M-Pesa PIN to complete the payment. Click 'Check Payment Status' once you receive the M-Pesa confirmation message."
       );
     } catch (error) {
       setIsProcessingPayment(false);
@@ -76,6 +73,24 @@ function BookingPayment() {
         error.response?.data?.error ||
           "Error initiating payment: Please try again"
       );
+    }
+  };
+
+  const handleCheckStatus = async () => {
+    setIsCheckingStatus(true);
+    try {
+      await refetchBooking();
+      if (booking?.payment_status === "COMPLETED") {
+        router.push(`/payment/${reference}/success`);
+      } else if (booking?.payment_status === "FAILED") {
+        router.push(`/payment/${reference}/failure`);
+      } else {
+        toast.info("Payment is still pending. Please try again.");
+      }
+    } catch (error) {
+      toast.error("Error checking payment status. Please try again.");
+    } finally {
+      setIsCheckingStatus(false);
     }
   };
 
@@ -273,21 +288,39 @@ function BookingPayment() {
             )}
             <hr className="my-4" />
             {booking.payment_status === "PENDING" && (
-              <button
-                onClick={handlePayment}
-                disabled={isProcessingPayment || !phoneNumber}
-                className="w-full py-3 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:bg-green-400 flex items-center justify-center gap-2"
-              >
-                {isProcessingPayment ? (
-                  <>Processing Payment...</>
-                ) : (
-                  <>
-                    <CreditCard className="h-5 w-5" />
-                    Pay with M-Pesa {booking.currency || "KES"}{" "}
-                    {parseFloat(booking.amount).toLocaleString()}
-                  </>
+              <div className="space-y-4">
+                <button
+                  onClick={handlePayment}
+                  disabled={isProcessingPayment || !phoneNumber}
+                  className="w-full py-3 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:bg-green-400 flex items-center justify-center gap-2"
+                >
+                  {isProcessingPayment ? (
+                    <>Processing Payment...</>
+                  ) : (
+                    <>
+                      <CreditCard className="h-5 w-5" />
+                      Pay with M-Pesa {booking.currency || "KES"}{" "}
+                      {parseFloat(booking.amount).toLocaleString()}
+                    </>
+                  )}
+                </button>
+                {paymentMessage && (
+                  <button
+                    onClick={handleCheckStatus}
+                    disabled={isCheckingStatus}
+                    className="w-full py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-blue-400 flex items-center justify-center gap-2"
+                  >
+                    {isCheckingStatus ? (
+                      <>Checking Status...</>
+                    ) : (
+                      <>
+                        <RefreshCw className="h-5 w-5" />
+                        Check Payment Status
+                      </>
+                    )}
+                  </button>
                 )}
-              </button>
+              </div>
             )}
             {booking.payment_status === "COMPLETED" && (
               <div className="text-center p-4 bg-green-50 rounded-lg border border-green-200">
