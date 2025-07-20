@@ -25,10 +25,10 @@ const validationSchema = Yup.object({
   name: Yup.string().required("Name is required"),
   email: Yup.string().email("Invalid email address"),
   phone: Yup.string()
-    .matches(
-      /^\+\d{10,15}$/,
-      "Phone number must include country code (e.g., +1234567890)"
-    )
+    // .matches(
+    //   /^\+\d{10,15}$/,
+    //   "Phone number must include country code (e.g., +1234567890)"
+    // )
     .required("Phone number is required"),
 });
 
