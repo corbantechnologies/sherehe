@@ -281,7 +281,7 @@ function MakeBooking({ event, closeModal, refetchEvent }) {
                     <Field
                       type="text"
                       name="phone"
-                      placeholder="+1234567890"
+                      placeholder="2547XXXXXXXX"
                       className="mt-1 block p-2 border w-full rounded-md border-gray-300 shadow-sm focus:border-red-300 focus:ring focus:ring-red-200 focus:ring-opacity-50"
                     />
                     <ErrorMessage
