@@ -3,7 +3,7 @@
 import { apiActions, apiMultipartActions } from "@/tools/api";
 
 export const getEvents = async () => {
-  const response = await apiMultipartActions?.get(`/api/v1/events/`);
+  const response = await apiMultipartActions?.get(`/api/v1/events/list/`);
   return response?.data?.results || [];
 };
 
@@ -14,6 +14,15 @@ export const getEvent = async (event_identity) => {
   return response?.data || {};
 };
 
+// authenticated user
+export const getMyEvents = async (axios) => {
+  const response = await apiMultipartActions?.get(`/api/v1/events/`, axios);
+  return response?.data?.results || [];
+};
+
+
+
+
 export const createEvent = async (formData, axios) => {
   try {
     await apiMultipartActions?.post(`/api/v1/events/`, formData, axios);
@@ -22,4 +31,3 @@ export const createEvent = async (formData, axios) => {
     throw error;
   }
 };
-

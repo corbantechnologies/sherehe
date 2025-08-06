@@ -47,7 +47,7 @@ const SignupForm = () => {
       router.push("/auth/login");
       setLoading(false);
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       toast.error("Error creating account. Please try again.");
     } finally {
       setLoading(false);
