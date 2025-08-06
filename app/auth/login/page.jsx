@@ -8,6 +8,7 @@ import { Eye, EyeOff, Mail, Lock, Calendar } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { getSession, signIn } from "next-auth/react";
+import Link from "next/link";
 
 const LoginForm = () => {
   const [loading, setLoading] = useState(false);
@@ -34,7 +35,7 @@ const LoginForm = () => {
       if (session?.user?.is_admin === true) {
         router.push("/admin/events");
       } else if (session?.user?.is_event === true) {
-        router.push("/admin/events");
+        router.push("/organizer/events");
       } else {
         router.push("/");
       }
@@ -152,6 +153,16 @@ const LoginForm = () => {
                 </div>
               )}
             </Button>
+            {/* Create Account */}
+            <p className="text-sm text-gray-600">
+              Don&apos;t have an account?{" "}
+              <Link
+                href="/auth/signup"
+                className="text-orange-600 hover:text-orange-700 font-medium transition-colors"
+              >
+                Sign up here
+              </Link>
+            </p>
 
             {/* Divider */}
             {/* <div className="relative">

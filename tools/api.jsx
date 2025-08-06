@@ -23,3 +23,7 @@ export const apiMultipartActions = axios?.create({
 export const signUpAdmin = async (values) => {
   await apiActions?.post("/api/v1/auth/signup/admin/", values);
 };
+
+export const signUpEvent = async (values) => {
+  await apiActions?.post("/api/v1/auth/signup/event/", values);
+};
