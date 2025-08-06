@@ -57,7 +57,7 @@ function EventDetail() {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedTicketType, setSelectedTicketType] = useState("all");
   const [selectedStatus, setSelectedStatus] = useState("all");
-  const itemsPerPage = 5;
+  const itemsPerPage = 10;
 
   const {
     isLoading: isLoadingEvent,
