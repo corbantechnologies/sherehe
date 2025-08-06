@@ -4,19 +4,21 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Eye, EyeOff, Mail, Lock, User, Phone } from "lucide-react";
 import toast from "react-hot-toast";
+import { signUpEvent } from "@/tools/api";
+import { useRouter } from "next/navigation";
 
 const SignupForm = () => {
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
+    name: "",
+    username: "",
     email: "",
-    phone: "",
     password: "",
     confirmPassword: "",
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const handleChange = (e) => {
     setFormData({
@@ -33,69 +35,63 @@ const SignupForm = () => {
       return;
     }
 
-    if (formData.password.length < 6) {
-      toast.error("Password must be at least 6 characters long");
+    if (formData.password.length < 5) {
+      toast.error("Password must be at least 5 characters long");
       return;
     }
 
     setLoading(true);
-
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      await signUpEvent(formData);
+      toast.success("Account created successfully!");
+      router.push("/auth/login");
       setLoading(false);
-      toast.success("Signup successful!");
-      console.log("Signup data:", formData);
-    }, 2000);
-  };
-
-  const handleSocialSignup = (provider) => {
-    console.log(`Signup with ${provider}`);
-    toast({
-      title: "Coming Soon",
-      description: `${provider} signup will be available soon!`,
-    });
+    } catch (error) {
+      console.log(error);
+      toast.error("Error creating account. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* Name Fields */}
-      <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="firstName" className="text-gray-700 font-medium">
-            First Name
-          </Label>
-          <div className="relative">
-            <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-            <Input
-              id="firstName"
-              name="firstName"
-              type="text"
-              required
-              value={formData.firstName}
-              onChange={handleChange}
-              className="pl-10 h-12 border-gray-200 focus:border-orange-500 focus:ring-orange-500"
-              placeholder="Enter your first name"
-            />
-          </div>
+      <div className="space-y-2">
+        <Label htmlFor="name" className="text-gray-700 font-medium">
+          Name
+        </Label>
+        <div className="relative">
+          <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+          <Input
+            id="name"
+            name="name"
+            type="text"
+            required
+            value={formData.name}
+            onChange={handleChange}
+            className="pl-10 h-12 border-gray-200 focus:border-orange-500 focus:ring-orange-500"
+            placeholder="Enter your name"
+          />
         </div>
+      </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="lastName" className="text-gray-700 font-medium">
-            Last Name
-          </Label>
-          <div className="relative">
-            <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-            <Input
-              id="lastName"
-              name="lastName"
-              type="text"
-              required
-              value={formData.lastName}
-              onChange={handleChange}
-              className="pl-10 h-12 border-gray-200 focus:border-orange-500 focus:ring-orange-500"
-              placeholder="Enter your last name"
-            />
-          </div>
+      <div className="space-y-2">
+        <Label htmlFor="username" className="text-gray-700 font-medium">
+          Username
+        </Label>
+        <div className="relative">
+          <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+          <Input
+            id="username"
+            name="username"
+            type="text"
+            required
+            value={formData.username}
+            onChange={handleChange}
+            className="pl-10 h-12 border-gray-200 focus:border-orange-500 focus:ring-orange-500"
+            placeholder="Enter a username"
+          />
         </div>
       </div>
 
@@ -115,26 +111,6 @@ const SignupForm = () => {
             onChange={handleChange}
             className="pl-10 h-12 border-gray-200 focus:border-orange-500 focus:ring-orange-500"
             placeholder="Enter your email address"
-          />
-        </div>
-      </div>
-
-      {/* Phone Field */}
-      <div className="space-y-2">
-        <Label htmlFor="phone" className="text-gray-700 font-medium">
-          Phone Number
-        </Label>
-        <div className="relative">
-          <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-          <Input
-            id="phone"
-            name="phone"
-            type="tel"
-            required
-            value={formData.phone}
-            onChange={handleChange}
-            className="pl-10 h-12 border-gray-200 focus:border-orange-500 focus:ring-orange-500"
-            placeholder="Enter your phone number"
           />
         </div>
       </div>
@@ -237,17 +213,17 @@ const SignupForm = () => {
       </Button>
 
       {/* Divider */}
-      <div className="relative">
+      {/* <div className="relative">
         <div className="absolute inset-0 flex items-center">
           <span className="w-full border-t border-gray-200" />
         </div>
         <div className="relative flex justify-center text-sm">
           <span className="px-4 bg-white text-gray-500">Or continue with</span>
         </div>
-      </div>
+      </div> */}
 
       {/* Social Signup Buttons */}
-      <div className="grid grid-cols-2 gap-4">
+      {/* <div className="grid grid-cols-2 gap-4">
         <Button
           type="button"
           variant="outline"
@@ -286,7 +262,7 @@ const SignupForm = () => {
           </svg>
           Facebook
         </Button>
-      </div>
+      </div> */}
     </form>
   );
 };
