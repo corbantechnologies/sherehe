@@ -64,8 +64,15 @@ function CreateEvent({ closeModal }) {
             router.push(`/admin/events/${response?.data?.identity}`);
             closeModal();
           } catch (error) {
-            toast.error("Failed to create event. Please try again.");
-            // console.error("Create Event Error:", error.response?.data || error);
+            if (error?.response?.data?.detail) {
+              toast.error(error?.response?.data?.detail);
+            } else {
+              toast.error("An error occurred while creating the event.");
+            }
+            // console.error(
+            //   "Create Event Error:",
+            //   error.response?.data?.detail || error
+            // );
           } finally {
             setLoading(false);
           }

@@ -332,61 +332,8 @@ function EventDetail() {
           <TabsContent value="tickets" className="space-y-6">
             <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
               <h2 className="text-xl font-semibold">Ticket Types</h2>
-              <Dialog
-                open={isCreateTicketDialogOpen}
-                onOpenChange={setIsCreateTicketDialogOpen}
-              >
-                <DialogTrigger asChild>
-                  <Button className="w-full sm:w-auto">
-                    <Plus className="h-4 w-4 mr-2" />
-                    Create Ticket Type
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Create New Ticket Type</DialogTitle>
-                    <DialogDescription>
-                      Add a new ticket type for {event.name}
-                    </DialogDescription>
-                  </DialogHeader>
-                  <div className="space-y-4">
-                    <div>
-                      <Label htmlFor="ticket-name">Ticket Name</Label>
-                      <Input
-                        id="ticket-name"
-                        placeholder="e.g., VIP, General Admission"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="ticket-price">Price (KES)</Label>
-                      <Input
-                        id="ticket-price"
-                        type="number"
-                        placeholder="0.00"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="ticket-quantity">
-                        Quantity Available
-                      </Label>
-                      <Input
-                        id="ticket-quantity"
-                        type="number"
-                        placeholder="Leave empty for unlimited"
-                      />
-                    </div>
-                    <div className="flex gap-2 pt-4">
-                      <Button className="flex-1">Create Ticket Type</Button>
-                      <Button
-                        variant="outline"
-                        onClick={() => setIsCreateTicketDialogOpen(false)}
-                      >
-                        Cancel
-                      </Button>
-                    </div>
-                  </div>
-                </DialogContent>
-              </Dialog>
+
+              {/* TODO: Implement modal for creating a new ticket type */}
             </div>
             {event.ticket_types.length === 0 ? (
               <Card className="p-8 sm:p-12 text-center">
