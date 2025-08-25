@@ -43,7 +43,7 @@ function CreateTicketType({ closeModal, refetch, event }) {
             formData.append("is_limited", values.is_limited.toString());
 
             await apiMultipartActions?.post(
-              `/api/v1/ticket-types/`,
+              `/api/v1/tickettypes/`,
               formData,
               axios
             );
@@ -57,6 +57,8 @@ function CreateTicketType({ closeModal, refetch, event }) {
             } else {
               toast.error("Error creating ticket type. Please try again.");
             }
+
+            console.error("Error creating ticket type:", error);
           } finally {
             setLoading(false);
           }

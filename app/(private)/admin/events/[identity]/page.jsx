@@ -229,20 +229,6 @@ function EventDetail() {
                 </div>
               </div>
             </div>
-
-            {/* <div className="flex gap-2">
-              <Button variant="outline">
-                <Edit className="h-4 w-4 mr-2" />
-                Edit Event
-              </Button>
-              <Button
-                variant="outline"
-                className="text-red-600 hover:text-red-700"
-              >
-                <Trash2 className="h-4 w-4 mr-2" />
-                Delete
-              </Button>
-            </div> */}
           </div>
         </div>
 
@@ -512,7 +498,6 @@ function EventDetail() {
                             <th scope="col" className="px-4 py-3">
                               Booking Date
                             </th>
-                            {/* <th scope="col" className="px-4 py-3">Actions</th> */}
                           </tr>
                         </thead>
                         <tbody>
@@ -548,18 +533,6 @@ function EventDetail() {
                                   "MMM dd, yyyy HH:mm"
                                 )}
                               </td>
-                              {/* <td className="px-4 py-3 flex gap-2">
-                                <Button variant="outline" size="sm">
-                                  <Edit className="h-4 w-4" />
-                                </Button>
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  className="text-red-600 hover:text-red-700"
-                                >
-                                  <Trash2 className="h-4 w-4" />
-                                </Button>
-                              </td> */}
                             </tr>
                           ))}
                         </tbody>
@@ -781,21 +754,25 @@ function EventDetail() {
       </div>
 
       {isModalOpen && (
-        <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-start justify-center z-50 pt-4 px-4">
-          <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-4xl max-h-[95vh] overflow-y-auto">
-            <button
-              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 text-xl font-bold"
-              onClick={() => setIsModalOpen(false)}
-            >
-              ✕
-            </button>
-            <CreateTicketType
-              closeModal={() => setIsModalOpen(false)}
-              event={event}
-              refetch={refetchEvent}
-            />
-          </div>
-        </div>
+        <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+          <DialogContent className="bg-white max-w-md sm:max-w-lg p-6 sm:p-8 rounded-2xl shadow-2xl transform transition-all duration-300 animate-modal-open">
+            <DialogHeader className="flex justify-between items-center mb-4">
+              <DialogTitle className="text-xl sm:text-2xl font-semibold text-gray-900">
+                Create Ticket Type
+              </DialogTitle>
+              <DialogDescription className="text-sm text-gray-500">
+                Add a new ticket type for the event "{event.name}"
+              </DialogDescription>
+            </DialogHeader>
+            <div className="max-h-[70vh] overflow-y-auto pr-2">
+              <CreateTicketType
+                closeModal={() => setIsModalOpen(false)}
+                event={event}
+                refetch={refetchEvent}
+              />
+            </div>
+          </DialogContent>
+        </Dialog>
       )}
     </div>
   );
