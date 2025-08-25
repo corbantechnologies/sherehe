@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react";
 import LoadingSpinner from "@/components/general/LoadingSpinner";
 import { useFetchTickets } from "@/hooks/tickets/actions";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -20,6 +20,7 @@ import TicketsGrid from "@/components/tickets/TicketsGrid";
 
 function EventTickets() {
   const { event_identity } = useParams();
+  const router = useRouter();
 
   const {
     isLoading: isLoadingTickets,
@@ -81,6 +82,15 @@ function EventTickets() {
 
   return (
     <div className="min-h-screen bg-background p-6">
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={() => router.back()}
+        className="flex items-center gap-2 w-full sm:w-auto"
+      >
+        <ArrowLeft className="h-4 w-4" />
+        Back to Events
+      </Button>
       <div className="max-w-7xl mx-auto space-y-8">
         {/* Header */}
         <div className="text-center space-y-4">
