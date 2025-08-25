@@ -52,13 +52,13 @@ function CreateTicketType({ closeModal, refetch, event }) {
             closeModal();
             refetch();
           } catch (error) {
-            if (error.response) {
-              toast.error(error.response.data.detail);
+            if (error.response.data["non_field_errors"][0]) {
+              toast.error(error.response.data["non_field_errors"][0]);
             } else {
               toast.error("Error creating ticket type. Please try again.");
             }
-
-            console.error("Error creating ticket type:", error);
+            setLoading(false);
+            closeModal();
           } finally {
             setLoading(false);
           }
