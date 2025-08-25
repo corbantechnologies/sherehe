@@ -7,15 +7,7 @@ import { useParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import {
-  Search,
-  Filter,
-  Ticket as TicketIcon,
-  CheckCircle,
-  Clock,
-  QrCode,
-} from "lucide-react";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Search, Filter, Ticket as TicketIcon, ArrowLeft } from "lucide-react";
 import TicketsGrid from "@/components/tickets/TicketsGrid";
 
 function EventTickets() {
@@ -86,7 +78,7 @@ function EventTickets() {
         variant="outline"
         size="sm"
         onClick={() => router.back()}
-        className="flex items-center gap-2 w-full sm:w-auto"
+        className="items-center gap-2 sm:w-auto mb-4"
       >
         <ArrowLeft className="h-4 w-4" />
         Back to Events
