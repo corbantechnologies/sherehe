@@ -333,7 +333,6 @@ function EventDetail() {
             <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
               <h2 className="text-xl font-semibold">Ticket Types</h2>
 
-              {/* TODO: Implement modal for creating a new ticket type */}
               <Button
                 onClick={() => setIsModalOpen(true)}
                 className="flex items-center"
