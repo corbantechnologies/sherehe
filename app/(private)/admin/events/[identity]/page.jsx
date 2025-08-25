@@ -48,15 +48,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import CreateTicketType from "@/forms/tickettypes/CreateTicketType";
 
 function EventDetail() {
   const { identity } = useParams();
   const navigate = useRouter();
-  const [isCreateTicketDialogOpen, setIsCreateTicketDialogOpen] =
-    useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedTicketType, setSelectedTicketType] = useState("all");
   const [selectedStatus, setSelectedStatus] = useState("all");
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const itemsPerPage = 10;
 
   const {
@@ -334,6 +334,13 @@ function EventDetail() {
               <h2 className="text-xl font-semibold">Ticket Types</h2>
 
               {/* TODO: Implement modal for creating a new ticket type */}
+              <Button
+                onClick={() => setIsModalOpen(true)}
+                className="flex items-center"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Create Ticket Type
+              </Button>
             </div>
             {event.ticket_types.length === 0 ? (
               <Card className="p-8 sm:p-12 text-center">
@@ -344,7 +351,10 @@ function EventDetail() {
                 <p className="text-gray-600 mb-4">
                   Get started by creating your first ticket type for this event.
                 </p>
-                <Button onClick={() => setIsCreateTicketDialogOpen(true)}>
+                <Button
+                  onClick={() => setIsModalOpen(true)}
+                  className="mx-auto flex items-center"
+                >
                   <Plus className="h-4 w-4 mr-2" />
                   Create Ticket Type
                 </Button>
@@ -770,6 +780,24 @@ function EventDetail() {
           </TabsContent>
         </Tabs>
       </div>
+
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-start justify-center z-50 pt-4 px-4">
+          <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-4xl max-h-[95vh] overflow-y-auto">
+            <button
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 text-xl font-bold"
+              onClick={() => setIsModalOpen(false)}
+            >
+              ✕
+            </button>
+            <CreateTicketType
+              closeModal={() => setIsModalOpen(false)}
+              event={event}
+              refetch={refetchEvent}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
