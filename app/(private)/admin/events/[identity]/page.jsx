@@ -66,6 +66,8 @@ function EventDetail() {
     refetch: refetchEvent,
   } = useFetchEvent(identity);
 
+  console.log(event);
+
   // Calculate event statistics
   const getEventStats = (event) => {
     let totalBookings = 0;
@@ -432,7 +434,7 @@ function EventDetail() {
                         <SelectValue placeholder="Select Ticket Type" />
                       </SelectTrigger>
                       <SelectContent className="bg-white">
-                        <SelectItem value="all">All Tickets</SelectItem>
+                        <SelectItem value="all">All Bookings</SelectItem>
                         {event.ticket_types.map((ticketType) => (
                           <SelectItem
                             key={ticketType.id}
