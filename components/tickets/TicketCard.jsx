@@ -1,10 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { QrCode, CheckCircle, Clock } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogFooter,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 
 function TicketCard({ ticket, onMarkUsed }) {
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [isCheckingIn, setIsCheckingIn] = useState(false);
+
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString("en-US", {
       month: "short",
@@ -13,6 +24,13 @@ function TicketCard({ ticket, onMarkUsed }) {
       hour: "2-digit",
       minute: "2-digit",
     });
+  };
+
+  const handleConfirmCheckIn = async () => {
+    setIsCheckingIn(true);
+    await onMarkUsed(ticket.reference);
+    setIsCheckingIn(false);
+    setIsConfirmOpen(false);
   };
 
   return (
@@ -80,13 +98,44 @@ function TicketCard({ ticket, onMarkUsed }) {
         </div>
 
         {!ticket.is_used && (
-          <Button
-            variant="default"
-            className="w-full bg-success text-success-foreground"
-            onClick={() => onMarkUsed(ticket.reference)}
-          >
-            Check In
-          </Button>
+          <>
+            <Button
+              variant="default"
+              className="w-full bg-success text-success-foreground"
+              onClick={() => setIsConfirmOpen(true)}
+              disabled={isCheckingIn}
+            >
+              {isCheckingIn ? "Checking In..." : "Check In"}
+            </Button>
+            <Dialog open={isConfirmOpen} onOpenChange={setIsConfirmOpen}>
+              <DialogContent className="bg-white max-w-md sm:max-w-lg p-6 sm:p-8 rounded-2xl shadow-2xl">
+                <DialogHeader>
+                  <DialogTitle>Confirm Check-In</DialogTitle>
+                  <DialogDescription>
+                    Are you sure you want to mark ticket {ticket.reference} as
+                    used? This action cannot be undone.
+                  </DialogDescription>
+                </DialogHeader>
+                <DialogFooter>
+                  <Button
+                    variant="outline"
+                    onClick={() => setIsConfirmOpen(false)}
+                    disabled={isCheckingIn}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    variant="default"
+                    className="bg-success text-success-foreground"
+                    onClick={handleConfirmCheckIn}
+                    disabled={isCheckingIn}
+                  >
+                    {isCheckingIn ? "Processing..." : "Confirm"}
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          </>
         )}
       </CardContent>
     </Card>
