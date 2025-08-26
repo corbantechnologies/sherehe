@@ -9,10 +9,13 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Search, Filter, Ticket as TicketIcon, ArrowLeft } from "lucide-react";
 import TicketsGrid from "@/components/tickets/TicketsGrid";
+import { apiMultipartActions } from "@/tools/api";
+import useAxiosAuth from "@/hooks/general/useAxiosAuth";
 
 function EventTickets() {
   const { event_identity } = useParams();
   const router = useRouter();
+  const axios = useAxiosAuth();
 
   const {
     isLoading: isLoadingTickets,
@@ -63,11 +66,16 @@ function EventTickets() {
     );
 
     // TODO: Implement actual API call to mark ticket as used
-    // For example:
-    // await fetch(`/api/tickets/${reference}/mark-used`, { method: 'POST' });
-
-    // Refetch to sync with server
-    refetchTickets();
+    try {
+      await apiMultipartActions?.patch(
+        `/api/v1/tickets/${reference}/`,
+        {
+          is_used: true,
+        },
+        axios
+      );
+      refetchTickets();
+    } catch (error) {}
   };
 
   if (isLoadingTickets) {
