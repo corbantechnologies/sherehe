@@ -11,6 +11,7 @@ import { Search, Filter, Ticket as TicketIcon, ArrowLeft } from "lucide-react";
 import TicketsGrid from "@/components/tickets/TicketsGrid";
 import { apiMultipartActions } from "@/tools/api";
 import useAxiosAuth from "@/hooks/general/useAxiosAuth";
+import toast from "react-hot-toast";
 
 function EventTickets() {
   const { event_identity } = useParams();
@@ -60,13 +61,13 @@ function EventTickets() {
   }, [localTickets]);
 
   const handleMarkUsed = async (reference) => {
-    // Optimistic update
-    setLocalTickets((prev) =>
-      prev.map((t) => (t.reference === reference ? { ...t, is_used: true } : t))
-    );
-
-    // TODO: Implement actual API call to mark ticket as used
     try {
+      // Optimistic update
+      setLocalTickets((prev) =>
+        prev.map((t) =>
+          t.reference === reference ? { ...t, is_used: true } : t
+        )
+      );
       await apiMultipartActions?.patch(
         `/api/v1/tickets/${reference}/`,
         {
@@ -75,7 +76,15 @@ function EventTickets() {
         axios
       );
       refetchTickets();
-    } catch (error) {}
+      toast.success("Ticket marked as used");
+    } catch (error) {
+      console.error("Error marking ticket as used:", error);
+      setLocalTickets((prev) =>
+        prev.map((t) =>
+          t.reference === reference ? { ...t, is_used: false } : t
+        )
+      );
+    }
   };
 
   if (isLoadingTickets) {
