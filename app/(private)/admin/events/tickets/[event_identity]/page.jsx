@@ -22,7 +22,6 @@ function EventTickets() {
 
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
-
   const [localTickets, setLocalTickets] = useState([]);
 
   useMemo(() => {
@@ -35,7 +34,10 @@ function EventTickets() {
     return localTickets.filter((ticket) => {
       const matchesSearch =
         ticket.reference.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        ticket.identity.toLowerCase().includes(searchTerm.toLowerCase());
+        ticket.identity.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (ticket.booking_info?.name || "")
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase());
 
       const matchesStatus =
         statusFilter === "all" ||
@@ -121,7 +123,7 @@ function EventTickets() {
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
               <Input
-                placeholder="Search by reference or identity..."
+                placeholder="Search by reference, identity, or name..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10"

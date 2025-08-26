@@ -59,6 +59,12 @@ function TicketCard({ ticket, onMarkUsed }) {
         </div>
 
         <div className="space-y-2 text-sm">
+          {ticket.booking_info?.name && (
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">Name:</span>
+              <span className="font-medium">{ticket.booking_info.name}</span>
+            </div>
+          )}
           <div className="flex justify-between">
             <span className="text-muted-foreground">Created:</span>
             <span className="font-medium">{formatDate(ticket.created_at)}</span>
