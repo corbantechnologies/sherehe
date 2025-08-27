@@ -109,7 +109,7 @@ function TicketCard({ ticket, onMarkUsed }) {
           <>
             <Button
               variant="default"
-              className="w-full bg-success text-success-foreground"
+              className="w-full bg-green-700 text-white hover:bg-green-600"
               onClick={() => setIsConfirmOpen(true)}
               disabled={isCheckingIn}
             >
@@ -134,7 +134,7 @@ function TicketCard({ ticket, onMarkUsed }) {
                   </Button>
                   <Button
                     variant="default"
-                    className="bg-success text-success-foreground"
+                    className="w-full bg-green-700 text-white hover:bg-green-600"
                     onClick={handleConfirmCheckIn}
                     disabled={isCheckingIn}
                   >
