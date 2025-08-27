@@ -78,7 +78,7 @@ function EventTickets() {
       refetchTickets();
       toast.success("Ticket marked as used");
     } catch (error) {
-      console.error("Error marking ticket as used:", error);
+      // console.error("Error marking ticket as used:", error);
       setLocalTickets((prev) =>
         prev.map((t) =>
           t.reference === reference ? { ...t, is_used: false } : t

@@ -66,8 +66,6 @@ function EventDetail() {
     refetch: refetchEvent,
   } = useFetchEvent(identity);
 
-  console.log(event);
-
   // Calculate event statistics
   const getEventStats = (event) => {
     let totalBookings = 0;
