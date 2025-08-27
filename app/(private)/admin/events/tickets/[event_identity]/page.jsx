@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Search, Filter, Ticket as TicketIcon, ArrowLeft } from "lucide-react";
 import TicketsGrid from "@/components/tickets/TicketsGrid";
-import { apiMultipartActions } from "@/tools/api";
+import { apiActions } from "@/tools/api";
 import useAxiosAuth from "@/hooks/general/useAxiosAuth";
 import toast from "react-hot-toast";
 
@@ -68,8 +68,8 @@ function EventTickets() {
           t.reference === reference ? { ...t, is_used: true } : t
         )
       );
-      await apiMultipartActions?.patch(
-        `/api/v1/tickets/${reference}/`,
+      await apiActions?.patch(
+        `/api/v1/tickets/${reference}/checkin/`,
         {
           is_used: true,
         },
