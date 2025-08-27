@@ -35,6 +35,7 @@ import {
 import { format } from "date-fns";
 import { useRouter } from "next/navigation";
 import CreateEvent from "@/forms/events/CreateEvent";
+import { signOut } from "next-auth/react";
 
 function Events() {
   const {
@@ -174,17 +175,17 @@ function Events() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          {/* <div className="flex items-center gap-4 mb-6">
+          <div className="flex items-center gap-4 mb-6">
             <Button
               variant="outline"
               size="sm"
-              onClick={() => router.push("/admin/dashboard")}
-              className="flex items-center gap-2"
+              onClick={() => signOut()}
+              className="flex items-center gap-2 cursor-pointer"
             >
               <ArrowLeft className="h-4 w-4" />
-              Back to Dashboard
+              Log out
             </Button>
-          </div> */}
+          </div>
           <div className="flex justify-between items-start mb-4">
             <div>
               <h1 className="text-3xl font-bold text-gray-900">

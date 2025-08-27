@@ -37,8 +37,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useParams, useRouter } from "next/navigation";
 import {
@@ -48,15 +46,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import CreateTicketType from "@/forms/tickettypes/CreateTicketType";
 
 function EventDetail() {
   const { identity } = useParams();
   const navigate = useRouter();
-  const [isCreateTicketDialogOpen, setIsCreateTicketDialogOpen] =
-    useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedTicketType, setSelectedTicketType] = useState("all");
   const [selectedStatus, setSelectedStatus] = useState("all");
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const itemsPerPage = 10;
 
   const {
@@ -230,19 +228,37 @@ function EventDetail() {
               </div>
             </div>
 
-            {/* <div className="flex gap-2">
-              <Button variant="outline">
+            {/* Event Actions */}
+            <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto ">
+              <Button
+                size="sm"
+                onClick={() =>
+                  navigate?.push(`/organizer/events/tickets/${identity}`)
+                }
+                className="w-full sm:w-auto bg-green-700 hover:bg-green-600 text-white"
+              >
+                <Users className="h-4 w-4 mr-2" />
+                View Tickets
+              </Button>
+
+              <Button
+                variant="outline"
+                size="sm"
+                // onClick={() => navigate?.push(`/organizer/events/${identity}/edit`)}
+                className="w-full sm:w-auto"
+              >
                 <Edit className="h-4 w-4 mr-2" />
                 Edit Event
               </Button>
               <Button
-                variant="outline"
-                className="text-red-600 hover:text-red-700"
+                variant="destructive"
+                size="sm"
+                className="w-full sm:w-auto bg-red-600 hover:bg-red-700"
               >
                 <Trash2 className="h-4 w-4 mr-2" />
-                Delete
+                Delete Event
               </Button>
-            </div> */}
+            </div>
           </div>
         </div>
 
@@ -332,61 +348,14 @@ function EventDetail() {
           <TabsContent value="tickets" className="space-y-6">
             <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
               <h2 className="text-xl font-semibold">Ticket Types</h2>
-              <Dialog
-                open={isCreateTicketDialogOpen}
-                onOpenChange={setIsCreateTicketDialogOpen}
+
+              <Button
+                onClick={() => setIsModalOpen(true)}
+                className="flex items-center"
               >
-                <DialogTrigger asChild>
-                  <Button className="w-full sm:w-auto">
-                    <Plus className="h-4 w-4 mr-2" />
-                    Create Ticket Type
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Create New Ticket Type</DialogTitle>
-                    <DialogDescription>
-                      Add a new ticket type for {event.name}
-                    </DialogDescription>
-                  </DialogHeader>
-                  <div className="space-y-4">
-                    <div>
-                      <Label htmlFor="ticket-name">Ticket Name</Label>
-                      <Input
-                        id="ticket-name"
-                        placeholder="e.g., VIP, General Admission"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="ticket-price">Price (KES)</Label>
-                      <Input
-                        id="ticket-price"
-                        type="number"
-                        placeholder="0.00"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="ticket-quantity">
-                        Quantity Available
-                      </Label>
-                      <Input
-                        id="ticket-quantity"
-                        type="number"
-                        placeholder="Leave empty for unlimited"
-                      />
-                    </div>
-                    <div className="flex gap-2 pt-4">
-                      <Button className="flex-1">Create Ticket Type</Button>
-                      <Button
-                        variant="outline"
-                        onClick={() => setIsCreateTicketDialogOpen(false)}
-                      >
-                        Cancel
-                      </Button>
-                    </div>
-                  </div>
-                </DialogContent>
-              </Dialog>
+                <Plus className="h-4 w-4 mr-2" />
+                Create Ticket Type
+              </Button>
             </div>
             {event.ticket_types.length === 0 ? (
               <Card className="p-8 sm:p-12 text-center">
@@ -397,7 +366,10 @@ function EventDetail() {
                 <p className="text-gray-600 mb-4">
                   Get started by creating your first ticket type for this event.
                 </p>
-                <Button onClick={() => setIsCreateTicketDialogOpen(true)}>
+                <Button
+                  onClick={() => setIsModalOpen(true)}
+                  className="mx-auto flex items-center"
+                >
                   <Plus className="h-4 w-4 mr-2" />
                   Create Ticket Type
                 </Button>
@@ -490,7 +462,7 @@ function EventDetail() {
                         <SelectValue placeholder="Select Ticket Type" />
                       </SelectTrigger>
                       <SelectContent className="bg-white">
-                        <SelectItem value="all">All Tickets</SelectItem>
+                        <SelectItem value="all">All Bookings</SelectItem>
                         {event.ticket_types.map((ticketType) => (
                           <SelectItem
                             key={ticketType.id}
@@ -556,7 +528,6 @@ function EventDetail() {
                             <th scope="col" className="px-4 py-3">
                               Booking Date
                             </th>
-                            {/* <th scope="col" className="px-4 py-3">Actions</th> */}
                           </tr>
                         </thead>
                         <tbody>
@@ -592,18 +563,6 @@ function EventDetail() {
                                   "MMM dd, yyyy HH:mm"
                                 )}
                               </td>
-                              {/* <td className="px-4 py-3 flex gap-2">
-                                <Button variant="outline" size="sm">
-                                  <Edit className="h-4 w-4" />
-                                </Button>
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  className="text-red-600 hover:text-red-700"
-                                >
-                                  <Trash2 className="h-4 w-4" />
-                                </Button>
-                              </td> */}
                             </tr>
                           ))}
                         </tbody>
@@ -823,6 +782,28 @@ function EventDetail() {
           </TabsContent>
         </Tabs>
       </div>
+
+      {isModalOpen && (
+        <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+          <DialogContent className="bg-white max-w-md sm:max-w-lg p-6 sm:p-8 rounded-2xl shadow-2xl transform transition-all duration-300 animate-modal-open">
+            <DialogHeader className="flex justify-between items-center mb-4">
+              <DialogTitle className="text-xl sm:text-2xl font-semibold text-gray-900">
+                Create Ticket Type
+              </DialogTitle>
+              <DialogDescription className="text-sm text-gray-500">
+                Add a new ticket type for the event "{event.name}"
+              </DialogDescription>
+            </DialogHeader>
+            <div className="max-h-[70vh] overflow-y-auto pr-2">
+              <CreateTicketType
+                closeModal={() => setIsModalOpen(false)}
+                event={event}
+                refetch={refetchEvent}
+              />
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 }

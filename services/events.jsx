@@ -27,7 +27,7 @@ export const createEvent = async (formData, axios) => {
   try {
     await apiMultipartActions?.post(`/api/v1/events/`, formData, axios);
   } catch (error) {
-    console.error("Create Event Error:", error.response?.data || error.message);
+    // console.error("Create Event Error:", error.response?.data || error.message);
     throw error;
   }
 };
