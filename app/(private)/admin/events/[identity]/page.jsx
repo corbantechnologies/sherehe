@@ -244,7 +244,7 @@ function EventDetail() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => navigate?.push(`/admin/events/${identity}/edit`)}
+                // onClick={() => navigate?.push(`/admin/events/${identity}/edit`)}
                 className="w-full sm:w-auto"
               >
                 <Edit className="h-4 w-4 mr-2" />

@@ -37,8 +37,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useParams, useRouter } from "next/navigation";
 import {
@@ -228,6 +226,38 @@ function EventDetail() {
                   </span>
                 </div>
               </div>
+            </div>
+
+            {/* Event Actions */}
+            <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto ">
+              <Button
+                size="sm"
+                onClick={() =>
+                  navigate?.push(`/organizer/events/tickets/${identity}`)
+                }
+                className="w-full sm:w-auto bg-green-700 hover:bg-green-600 text-white"
+              >
+                <Users className="h-4 w-4 mr-2" />
+                View Tickets
+              </Button>
+
+              <Button
+                variant="outline"
+                size="sm"
+                // onClick={() => navigate?.push(`/organizer/events/${identity}/edit`)}
+                className="w-full sm:w-auto"
+              >
+                <Edit className="h-4 w-4 mr-2" />
+                Edit Event
+              </Button>
+              <Button
+                variant="destructive"
+                size="sm"
+                className="w-full sm:w-auto bg-red-600 hover:bg-red-700"
+              >
+                <Trash2 className="h-4 w-4 mr-2" />
+                Delete Event
+              </Button>
             </div>
           </div>
         </div>
