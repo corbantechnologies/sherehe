@@ -95,14 +95,6 @@ function TicketCard({ ticket, onMarkUsed }) {
             <span className="text-muted-foreground">Created:</span>
             <span className="font-medium">{formatDate(ticket.created_at)}</span>
           </div>
-          {ticket.updated_at !== ticket.created_at && (
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Updated:</span>
-              <span className="font-medium">
-                {formatDate(ticket.updated_at)}
-              </span>
-            </div>
-          )}
         </div>
 
         {!ticket.is_used && (
