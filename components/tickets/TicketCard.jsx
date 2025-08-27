@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { QrCode, CheckCircle, Clock } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -11,6 +10,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
+import { QrCode, CheckCircle, Clock } from "lucide-react";
 
 function TicketCard({ ticket, onMarkUsed }) {
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
@@ -83,6 +83,14 @@ function TicketCard({ ticket, onMarkUsed }) {
               <span className="font-medium">{ticket.booking_info.name}</span>
             </div>
           )}
+          {ticket.ticket_type_info?.name && (
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">Ticket Type:</span>
+              <span className="font-medium">
+                {ticket.ticket_type_info.name}
+              </span>
+            </div>
+          )}
           <div className="flex justify-between">
             <span className="text-muted-foreground">Created:</span>
             <span className="font-medium">{formatDate(ticket.created_at)}</span>
@@ -101,14 +109,14 @@ function TicketCard({ ticket, onMarkUsed }) {
           <>
             <Button
               variant="default"
-              className="w-full bg-green-700 text-white hover:bg-green-600"
+              className="w-full bg-success text-success-foreground"
               onClick={() => setIsConfirmOpen(true)}
               disabled={isCheckingIn}
             >
               {isCheckingIn ? "Checking In..." : "Check In"}
             </Button>
             <Dialog open={isConfirmOpen} onOpenChange={setIsConfirmOpen}>
-              <DialogContent className="bg-white max-w-md sm:max-w-lg p-6 sm:p-8 rounded-2xl shadow-2xl">
+              <DialogContent className="bg-white max-w-md sm:max-w-lg p-6 sm:p-8 rounded-2xl shadow-2xl transform transition-all duration-300 animate-modal-open">
                 <DialogHeader>
                   <DialogTitle>Confirm Check-In</DialogTitle>
                   <DialogDescription>
