@@ -24,6 +24,7 @@ function EventTickets() {
     refetch: refetchTickets,
   } = useFetchTickets(event_identity);
 
+
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [localTickets, setLocalTickets] = useState([]);
