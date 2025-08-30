@@ -1,6 +1,6 @@
 "use client";
 
-import React, { use, useState } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   Calendar,
@@ -170,7 +170,9 @@ function EventDetail({ params }) {
                     <div>
                       <p className="font-medium">Capacity</p>
                       <p className="text-gray-600">
-                        {event.capacity} attendees
+                        {event.capacity
+                          ? `${event.capacity} attendees`
+                          : "Not specified"}
                       </p>
                     </div>
                   </div>
@@ -180,71 +182,80 @@ function EventDetail({ params }) {
           </div>
 
           <div className="lg:col-span-1">
-            <div className="sticky top-24 bg-white rounded-lg shadow-sm p-6">
-              <h2 className="text-xl font-semibold mb-4">Select Tickets</h2>
-              <div className="space-y-4">
-                {event.ticket_types && event.ticket_types.length > 0 ? (
-                  <>
-                    <div className="space-y-3">
-                      {event.ticket_types.map((ticket) => (
-                        <div
-                          key={ticket.id}
-                          className="border rounded-lg p-4 hover:border-red-300 transition-colors cursor-pointer"
-                        >
-                          <div className="flex justify-between items-start mb-2">
-                            <div>
-                              <h4 className="font-semibold">{ticket.name}</h4>
-                              <p className="text-2xl font-bold text-red-600">
-                                KES {parseFloat(ticket.price).toLocaleString()}
-                              </p>
-                            </div>
-                            <TicketTypeChip
-                              ticketType={ticket}
-                              isLowestPrice={
-                                parseFloat(ticket.price) === getLowestPrice()
-                              }
-                            />
-                          </div>
-                          {ticket.quantity_available &&
-                          ticket.quantity_available <= 10 ? (
-                            <p className="text-sm text-orange-600 font-medium">
-                              Only {ticket.quantity_available} tickets left!
-                            </p>
-                          ) : ticket.quantity_available ? (
-                            <p className="text-sm text-gray-600">
-                              {ticket.quantity_available} tickets available
-                            </p>
-                          ) : ticket?.is_limited ? (
-                            <p className="text-sm text-gray-600">
-                              Limited tickets available
-                            </p>
-                          ) : (
-                            <p className="text-sm text-gray-600">
-                              Unlimited tickets available
-                            </p>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                    <button
-                      onClick={() => setShowBookingModal(true)}
-                      className="w-full primary-button py-3 px-4 rounded-lg font-medium text-lg"
-                    >
-                      Get Tickets
-                    </button>
-                    <p className="text-xs text-gray-500 text-center">
-                      Secure payment processing
-                    </p>
-                  </>
-                ) : (
-                  <div className="text-center py-8">
-                    <p className="text-gray-500">
-                      No tickets available for this event
-                    </p>
-                  </div>
-                )}
+            {event.is_closed ? (
+              <div className="sticky top-24 bg-white rounded-lg shadow-sm p-6 text-center">
+                <p className="text-gray-500 text-lg">
+                  This event is closed. No tickets are available.
+                </p>
               </div>
-            </div>
+            ) : (
+              <div className="sticky top-24 bg-white rounded-lg shadow-sm p-6">
+                <h2 className="text-xl font-semibold mb-4">Select Tickets</h2>
+                <div className="space-y-4">
+                  {event.ticket_types && event.ticket_types.length > 0 ? (
+                    <>
+                      <div className="space-y-3">
+                        {event.ticket_types.map((ticket) => (
+                          <div
+                            key={ticket.id}
+                            className="border rounded-lg p-4 hover:border-red-300 transition-colors cursor-pointer"
+                          >
+                            <div className="flex justify-between items-start mb-2">
+                              <div>
+                                <h4 className="font-semibold">{ticket.name}</h4>
+                                <p className="text-2xl font-bold text-red-600">
+                                  KES{" "}
+                                  {parseFloat(ticket.price).toLocaleString()}
+                                </p>
+                              </div>
+                              <TicketTypeChip
+                                ticketType={ticket}
+                                isLowestPrice={
+                                  parseFloat(ticket.price) === getLowestPrice()
+                                }
+                              />
+                            </div>
+                            {ticket.quantity_available &&
+                            ticket.quantity_available <= 10 ? (
+                              <p className="text-sm text-orange-600 font-medium">
+                                Only {ticket.quantity_available} tickets left!
+                              </p>
+                            ) : ticket.quantity_available ? (
+                              <p className="text-sm text-gray-600">
+                                {ticket.quantity_available} tickets available
+                              </p>
+                            ) : ticket?.is_limited ? (
+                              <p className="text-sm text-gray-600">
+                                Limited tickets available
+                              </p>
+                            ) : (
+                              <p className="text-sm text-gray-600">
+                                Unlimited tickets available
+                              </p>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                      <button
+                        onClick={() => setShowBookingModal(true)}
+                        className="w-full primary-button py-3 px-4 rounded-lg font-medium text-lg"
+                      >
+                        Get Tickets
+                      </button>
+                      <p className="text-xs text-gray-500 text-center">
+                        Secure payment processing
+                      </p>
+                    </>
+                  ) : (
+                    <div className="text-center py-8">
+                      <p className="text-gray-500">
+                        No tickets available for this event
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
