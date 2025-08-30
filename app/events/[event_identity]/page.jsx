@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import {
   Calendar,
   Clock,
@@ -15,8 +15,8 @@ import { useFetchEvent } from "@/hooks/events/actions";
 import TicketTypeChip from "@/components/events/TicketTypeChip";
 import MakeBooking from "@/forms/bookings/MakeBooking";
 
-function EventDetail({ params }) {
-  const { event_identity } = use(params);
+function EventDetail() {
+  const { event_identity } = useParams();
   const router = useRouter();
   const [showBookingModal, setShowBookingModal] = useState(false);
 
@@ -178,6 +178,17 @@ function EventDetail({ params }) {
                   </div>
                 </div>
               </div>
+            </div>
+
+            <div className="bg-white rounded-lg shadow-sm p-6">
+              <h2 className="text-xl font-semibold mb-4">
+                Cancellation Policy
+              </h2>
+              <p className="text-gray-700 text-lg leading-relaxed">
+                {event.cancellation_policy
+                  ? event.cancellation_policy
+                  : "No cancellation policy specified for this event."}
+              </p>
             </div>
           </div>
 
