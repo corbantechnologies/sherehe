@@ -24,7 +24,6 @@ function EventTickets() {
     refetch: refetchTickets,
   } = useFetchTickets(event_identity);
 
-
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [localTickets, setLocalTickets] = useState([]);
@@ -42,7 +41,8 @@ function EventTickets() {
         ticket.identity.toLowerCase().includes(searchTerm.toLowerCase()) ||
         (ticket.booking_info?.name || "")
           .toLowerCase()
-          .includes(searchTerm.toLowerCase());
+          .includes(searchTerm.toLowerCase()) ||
+        ticket.booking_info?.reference.toLowerCase;
 
       const matchesStatus =
         statusFilter === "all" ||

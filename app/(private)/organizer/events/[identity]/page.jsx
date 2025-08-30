@@ -522,8 +522,9 @@ function EventDetail() {
                             <th scope="col" className="px-4 py-3">
                               Status
                             </th>
+
                             <th scope="col" className="px-4 py-3">
-                              Amount (KES)
+                              Reference
                             </th>
                             <th scope="col" className="px-4 py-3">
                               Booking Date
@@ -554,9 +555,8 @@ function EventDetail() {
                                   {booking.status}
                                 </BadgeComponent>
                               </td>
-                              <td className="px-4 py-3">
-                                {parseFloat(booking.amount).toFixed(2)}
-                              </td>
+
+                              <td className="px-4 py-3">{booking.reference}</td>
                               <td className="px-4 py-3">
                                 {format(
                                   new Date(booking.created_at),
