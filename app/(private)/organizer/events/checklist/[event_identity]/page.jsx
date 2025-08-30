@@ -17,7 +17,14 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { Search, Filter, ArrowLeft, CheckCircle, Download } from "lucide-react";
+import {
+  Search,
+  Filter,
+  ArrowLeft,
+  CheckCircle,
+  Download,
+  Users,
+} from "lucide-react";
 import Papa from "papaparse";
 import useAxiosAuth from "@/hooks/general/useAxiosAuth";
 import { apiActions } from "@/tools/api";
@@ -198,15 +205,24 @@ function EventCheckList() {
           </Card>
         </div>
 
-        {/* Download Button */}
-        <div className="flex justify-end">
+        {/* Download and View Tickets Buttons */}
+        <div className="flex justify-end gap-2">
           <Button
+            size="sm"
             className="bg-green-600 hover:bg-green-700 text-white"
             onClick={handleDownloadCSV}
             disabled={!confirmedBookings.length}
           >
             <Download className="h-4 w-4 mr-2" />
             Download CSV
+          </Button>
+          <Button
+            size="sm"
+            onClick={() => router.push(`/organizer/events/tickets/${identity}`)}
+            className="bg-green-700 hover:bg-green-600 text-white"
+          >
+            <Users className="h-4 w-4 mr-2" />
+            View Tickets
           </Button>
         </div>
 
