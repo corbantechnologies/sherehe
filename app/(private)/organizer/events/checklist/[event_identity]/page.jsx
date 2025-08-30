@@ -19,9 +19,12 @@ import {
 import { Search, Filter, ArrowLeft, CheckCircle, Download } from "lucide-react";
 import Papa from "papaparse";
 import toast from "react-hot-toast";
+import useAxiosAuth from "@/hooks/general/useAxiosAuth";
+import { apiActions } from "@/tools/api";
 
 function EventCheckList() {
   const { event_identity: identity } = useParams();
+  const axios = useAxiosAuth();
   const router = useRouter();
   const {
     isLoading: isLoadingEvent,
@@ -80,21 +83,13 @@ function EventCheckList() {
     try {
       // Mark all tickets in the booking as used
       const ticketPromises = booking.tickets.map((ticket) =>
-        fetch(`/api/v1/tickets/${ticket.reference}/`, {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            // Add authentication headers if required
+        apiActions?.patch(
+          `/api/v1/tickets/${ticket.reference}/checkin/`,
+          {
+            is_used: true,
           },
-          body: JSON.stringify({ is_used: true }),
-        }).then((response) => {
-          if (!response.ok) {
-            throw new Error(
-              `Failed to mark ticket ${ticket.reference} as used`
-            );
-          }
-          return response.json();
-        })
+          axios
+        )
       );
 
       await Promise.all(ticketPromises);
