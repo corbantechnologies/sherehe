@@ -15,6 +15,7 @@ import {
   DollarSign,
   ChevronLeft,
   ChevronRight,
+  Clipboard,
 } from "lucide-react";
 
 import LoadingSpinner from "@/components/general/LoadingSpinner";
@@ -242,6 +243,17 @@ function EventDetail() {
               </Button>
 
               <Button
+                size="sm"
+                onClick={() =>
+                  navigate?.push(`/admin/events/checklist/${identity}`)
+                }
+                className="w-full sm:w-auto bg-orange-600 hover:bg-orange-500 text-white"
+              >
+                <Clipboard className="h-4 w-4 mr-2" />
+                Checklist
+              </Button>
+
+              {/* <Button
                 variant="outline"
                 size="sm"
                 // onClick={() => navigate?.push(`/admin/events/${identity}/edit`)}
@@ -249,15 +261,15 @@ function EventDetail() {
               >
                 <Edit className="h-4 w-4 mr-2" />
                 Edit Event
-              </Button>
-              <Button
+              </Button> */}
+              {/* <Button
                 variant="destructive"
                 size="sm"
                 className="w-full sm:w-auto bg-red-600 hover:bg-red-700"
               >
                 <Trash2 className="h-4 w-4 mr-2" />
                 Delete Event
-              </Button>
+              </Button> */}
             </div>
           </div>
         </div>
