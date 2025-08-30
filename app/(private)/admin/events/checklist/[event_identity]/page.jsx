@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import toast from "react-hot-toast";
 import LoadingSpinner from "@/components/general/LoadingSpinner";
 import { useFetchEvent } from "@/hooks/events/actions";
 import { useParams, useRouter } from "next/navigation";
@@ -18,7 +19,6 @@ import {
 } from "@/components/ui/dialog";
 import { Search, Filter, ArrowLeft, CheckCircle, Download } from "lucide-react";
 import Papa from "papaparse";
-import toast from "react-hot-toast";
 import useAxiosAuth from "@/hooks/general/useAxiosAuth";
 import { apiActions } from "@/tools/api";
 
@@ -57,6 +57,22 @@ function EventCheckList() {
       confirmedBookings.map((booking) => booking.ticket_type_name)
     );
     return ["all", ...Array.from(types)];
+  }, [confirmedBookings]);
+
+  // Calculate analytics
+  const analytics = useMemo(() => {
+    const totalConfirmed = confirmedBookings.length;
+    const pendingCheckIn = confirmedBookings.reduce(
+      (sum, booking) =>
+        sum + booking.tickets.filter((ticket) => !ticket.is_used).length,
+      0
+    );
+    const checkedIn = confirmedBookings.reduce(
+      (sum, booking) =>
+        sum + booking.tickets.filter((ticket) => ticket.is_used).length,
+      0
+    );
+    return { totalConfirmed, pendingCheckIn, checkedIn };
   }, [confirmedBookings]);
 
   // Filter bookings by search and ticket type
@@ -154,11 +170,38 @@ function EventCheckList() {
           </p>
         </div>
 
+        {/* Analytics Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <Card className="bg-card border border-border rounded-lg p-6 text-center">
+            <div className="text-3xl font-bold text-primary">
+              {analytics.totalConfirmed}
+            </div>
+            <div className="text-sm text-muted-foreground">
+              Total Confirmed Bookings
+            </div>
+          </Card>
+          <Card className="bg-card border border-border rounded-lg p-6 text-center">
+            <div className="text-3xl font-bold text-green-600">
+              {analytics.pendingCheckIn}
+            </div>
+            <div className="text-sm text-muted-foreground">
+              Pending Check-In Tickets
+            </div>
+          </Card>
+          <Card className="bg-card border border-border rounded-lg p-6 text-center">
+            <div className="text-3xl font-bold text-muted-foreground">
+              {analytics.checkedIn}
+            </div>
+            <div className="text-sm text-muted-foreground">
+              Checked-In Tickets
+            </div>
+          </Card>
+        </div>
+
         {/* Download Button */}
         <div className="flex justify-end">
           <Button
-            variant="default"
-            className="bg-success text-success-foreground"
+            className="bg-green-600 hover:bg-green-700 text-white"
             onClick={handleDownloadCSV}
             disabled={!confirmedBookings.length}
           >
@@ -251,7 +294,7 @@ function EventCheckList() {
                             <Button
                               variant="default"
                               size="sm"
-                              className="bg-success text-success-foreground"
+                              className="bg-green-600 hover:bg-green-700 text-white"
                               onClick={() =>
                                 setIsConfirmOpen(booking.reference)
                               }
@@ -305,7 +348,7 @@ function EventCheckList() {
                         <div>
                           <Button
                             variant="default"
-                            className="w-full bg-success text-success-foreground"
+                            className="w-full bg-green-600 hover:bg-green-700 text-white"
                             onClick={() => setIsConfirmOpen(booking.reference)}
                             disabled={
                               checkingInBooking === booking.reference ||
@@ -361,8 +404,7 @@ function EventCheckList() {
                   Cancel
                 </Button>
                 <Button
-                  variant="default"
-                  className="bg-success text-success-foreground"
+                  className="bg-green-600 hover:bg-green-700 text-white"
                   onClick={() =>
                     handleMarkBookingUsed(
                       confirmedBookings.find(
