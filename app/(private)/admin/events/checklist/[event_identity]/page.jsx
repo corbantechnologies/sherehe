@@ -24,8 +24,11 @@ import {
   CheckCircle,
   Download,
   Users,
+  FileText,
 } from "lucide-react";
 import Papa from "papaparse";
+import { jsPDF } from "jspdf";
+import { applyPlugin } from "jspdf-autotable";
 import useAxiosAuth from "@/hooks/general/useAxiosAuth";
 import { apiActions } from "@/tools/api";
 
@@ -38,6 +41,8 @@ function EventCheckList() {
     data: event,
     refetch: refetchEvent,
   } = useFetchEvent(identity);
+
+  applyPlugin(jsPDF);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [ticketTypeFilter, setTicketTypeFilter] = useState("all");
@@ -148,6 +153,84 @@ function EventCheckList() {
     URL.revokeObjectURL(link.href);
   };
 
+  const handleDownloadPDF = () => {
+    const doc = new jsPDF();
+    const margin = 10;
+    let yPosition = 20;
+
+    // Add header
+    doc.setFontSize(16);
+    doc.setFont("helvetica", "bold");
+    doc.text(`${event.name} - Check-In List`, margin, yPosition);
+    yPosition += 10;
+
+    // Add date
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "normal");
+    doc.text(
+      `Generated on: ${new Date().toLocaleString("en-US", {
+        dateStyle: "medium",
+        timeStyle: "short",
+        timeZone: "Africa/Nairobi",
+      })}`,
+      margin,
+      yPosition
+    );
+    yPosition += 10;
+
+    // Add analytics
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "bold");
+    doc.text("Analytics", margin, yPosition);
+    yPosition += 10;
+    doc.setFont("helvetica", "normal");
+    doc.text(
+      `Total Confirmed Bookings: ${analytics.totalConfirmed}`,
+      margin,
+      yPosition
+    );
+    yPosition += 5;
+    doc.text(
+      `Pending Check-In Tickets: ${analytics.pendingCheckIn}`,
+      margin,
+      yPosition
+    );
+    yPosition += 5;
+    doc.text(`Checked-In Tickets: ${analytics.checkedIn}`, margin, yPosition);
+    yPosition += 15;
+
+    // Add table
+    doc.autoTable({
+      startY: yPosition,
+      head: [["Name", "Email", "Phone", "Ticket Type"]],
+      body: filteredBookings.map((booking) => [
+        booking.name || "N/A",
+        booking.email || "N/A",
+        booking.phone || "N/A",
+        booking.ticket_type_name,
+      ]),
+      theme: "grid",
+      headStyles: {
+        fillColor: [100, 100, 100],
+        textColor: [255, 255, 255],
+        fontSize: 10,
+      },
+      bodyStyles: {
+        fontSize: 9,
+      },
+      margin: { left: margin, right: margin },
+      columnStyles: {
+        0: { cellWidth: 47.5 }, // Name
+        1: { cellWidth: 47.5 }, // Email
+        2: { cellWidth: 47.5 }, // Phone
+        3: { cellWidth: 47.5 }, // Ticket Type
+      },
+    });
+
+    // Save the PDF
+    doc.save(`${event.name}_checklist.pdf`);
+  };
+
   if (isLoadingEvent) {
     return <LoadingSpinner />;
   }
@@ -215,6 +298,15 @@ function EventCheckList() {
           >
             <Download className="h-4 w-4 mr-2" />
             Download CSV
+          </Button>
+          <Button
+            size="sm"
+            className="bg-green-600 hover:bg-green-700 text-white"
+            onClick={handleDownloadPDF}
+            disabled={!confirmedBookings.length}
+          >
+            <FileText className="h-4 w-4 mr-2" />
+            Download PDF
           </Button>
           <Button
             size="sm"
