@@ -155,7 +155,6 @@ function EventCheckList() {
 
   const handleDownloadPDF = () => {
     const doc = new jsPDF();
-    const pageWidth = doc.internal.pageSize.getWidth();
     const margin = 10;
     let yPosition = 20;
 
@@ -201,25 +200,14 @@ function EventCheckList() {
     yPosition += 15;
 
     // Add table
-    doc?.autoTable({
+    doc.autoTable({
       startY: yPosition,
-      head: [
-        [
-          "Name",
-          "Email",
-          "Phone",
-          "Ticket Type",
-          // "Check-In Status",
-        ],
-      ],
+      head: [["Name", "Email", "Phone", "Ticket Type"]],
       body: filteredBookings.map((booking) => [
         booking.name || "N/A",
         booking.email || "N/A",
         booking.phone || "N/A",
         booking.ticket_type_name,
-        // booking.tickets.every((ticket) => ticket.is_used)
-        //   ? "Checked In"
-        //   : "Pending",
       ]),
       theme: "grid",
       headStyles: {
@@ -232,11 +220,10 @@ function EventCheckList() {
       },
       margin: { left: margin, right: margin },
       columnStyles: {
-        1: { cellWidth: 25 }, // Name
-        2: { cellWidth: 25 }, // Email
-        3: { cellWidth: 25 }, // Phone
-        4: { cellWidth: 25 }, // Ticket Type
-        // 6: { cellWidth: 25 }, // Check-In Status
+        0: { cellWidth: 47.5 }, // Name
+        1: { cellWidth: 47.5 }, // Email
+        2: { cellWidth: 47.5 }, // Phone
+        3: { cellWidth: 47.5 }, // Ticket Type
       },
     });
 
