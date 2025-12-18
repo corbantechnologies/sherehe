@@ -439,7 +439,7 @@ function Events() {
                         size="sm"
                         className="flex-1 cursor-pointer"
                         onClick={() =>
-                          router.push(`/admin/events/${event.identity}`)
+                          router.push(`/admin/events/${event.event_code}`)
                         }
                       >
                         <Eye className="h-4 w-4 mr-1" />

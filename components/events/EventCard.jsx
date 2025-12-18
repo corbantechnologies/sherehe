@@ -127,7 +127,7 @@ function EventCard({ event }) {
         )}
 
         <Link
-          href={`/events/${event.identity}`}
+          href={`/events/${event.event_code}`}
           className="w-full primary-button py-3 px-4 rounded-lg font-medium text-sm transition-all duration-200 hover:shadow-md"
         >
           View Event Details

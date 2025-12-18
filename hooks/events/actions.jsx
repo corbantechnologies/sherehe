@@ -11,11 +11,11 @@ export function useFetchEvents() {
   });
 }
 
-export function useFetchEvent(event_identity) {
+export function useFetchEvent(event_code) {
   return useQuery({
-    queryKey: ["events", event_identity],
-    queryFn: () => getEvent(event_identity),
-    enabled: !!event_identity,
+    queryKey: ["events", event_code],
+    queryFn: () => getEvent(event_code),
+    enabled: !!event_code,
   });
 }
 

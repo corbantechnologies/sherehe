@@ -34,7 +34,7 @@ const LoginForm = () => {
       toast?.success("Login successful! Redirecting...");
       if (session?.user?.is_admin === true) {
         router.push("/admin/events");
-      } else if (session?.user?.is_event === true) {
+      } else if (session?.user?.is_event_manager === true) {
         router.push("/organizer/events");
       } else {
         router.push("/");

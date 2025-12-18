@@ -50,7 +50,7 @@ import {
 import CreateTicketType from "@/forms/tickettypes/CreateTicketType";
 
 function EventDetail() {
-  const { identity } = useParams();
+  const { event_code } = useParams();
   const navigate = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedTicketType, setSelectedTicketType] = useState("all");
@@ -63,7 +63,7 @@ function EventDetail() {
     data: event,
     isError: isErrorEvent,
     refetch: refetchEvent,
-  } = useFetchEvent(identity);
+  } = useFetchEvent(event_code);
 
   // Calculate event statistics
   const getEventStats = (event) => {

@@ -16,7 +16,7 @@ import TicketTypeChip from "@/components/events/TicketTypeChip";
 import MakeBooking from "@/forms/bookings/MakeBooking";
 
 function EventDetail() {
-  const { event_identity } = useParams();
+  const { event_code } = useParams();
   const router = useRouter();
   const [showBookingModal, setShowBookingModal] = useState(false);
 
@@ -24,7 +24,7 @@ function EventDetail() {
     isLoading: isLoadingEvent,
     data: event,
     refetch: refetchEvent,
-  } = useFetchEvent(event_identity);
+  } = useFetchEvent(event_code);
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
