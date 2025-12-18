@@ -194,7 +194,7 @@ function EventDetail() {
               <BadgeComponent variant={isUpcoming ? "default" : "secondary"}>
                 {isUpcoming ? "Upcoming" : "Past"}
               </BadgeComponent>
-              <span className="text-sm text-gray-500">#{event.reference}</span>
+              <span className="text-sm text-gray-500">#{event.reference} {event.event_code}</span>
             </div>
           </div>
 

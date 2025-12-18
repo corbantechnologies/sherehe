@@ -18,7 +18,7 @@ function CreateTicketType({ closeModal, refetch, event }) {
 
       <Formik
         initialValues={{
-          event: event?.identity,
+          event: event?.event_code,
           name: "",
           price: "",
           quantity_available: "",
@@ -52,6 +52,7 @@ function CreateTicketType({ closeModal, refetch, event }) {
             closeModal();
             refetch();
           } catch (error) {
+            console.log(error);
             if (error.response.data["non_field_errors"][0]) {
               toast.error(error.response.data["non_field_errors"][0]);
             } else {
