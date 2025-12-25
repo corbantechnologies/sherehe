@@ -477,10 +477,10 @@ function EventDetail() {
                         <SelectItem value="all">All Bookings</SelectItem>
                         {event.ticket_types.map((ticketType) => (
                           <SelectItem
-                            key={ticketType.id}
-                            value={ticketType.name}
+                            key={ticketType?.reference}
+                            value={ticketType?.name}
                           >
-                            {ticketType.name}
+                            {ticketType?.name}
                           </SelectItem>
                         ))}
                       </SelectContent>
